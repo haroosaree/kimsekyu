@@ -7,8 +7,7 @@ import { useState } from "react";
 const navigation = [
   { label: "매물검색", href: "http://austingrace.matrix.abor.com/Matrix/Public/?L=1&ap=SCH", external: true },
   { label: "부동산 정보", href: "/news/property-info" },
-  { label: "어스틴 부동산", href: "/news/austin-real-estate" },
-  { label: "어스틴 경제/뉴스", href: "/news/austin-economy" },
+  { label: "어스틴 소식", href: "/news/austin-news" },
   {
     label: "자료실",
     href: "/resources",

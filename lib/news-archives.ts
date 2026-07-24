@@ -18,6 +18,14 @@ export const categoryArchives = {
       "legacy-board-8", "어스틴 경제 · 비즈니스 뉴스",
     ],
   },
+  "austin-news": {
+    title: "어스틴 소식",
+    // Keep the legacy category stored on every article. This combined menu only reads it.
+    categories: [
+      "legacy-board-5", "legacy-board-6", "legacy-board-8",
+      "어스틴 부동산", "어스틴 지역 · 동네 정보", "어스틴 경제 · 비즈니스 뉴스",
+    ],
+  },
   questions: {
     title: "질문/답변",
     categories: ["legacy-board-13", "부동산 질문 · 답변"],
