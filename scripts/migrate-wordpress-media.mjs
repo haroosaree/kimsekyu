@@ -29,15 +29,19 @@ if (missing.length > 0) {
 
 const xml = await readFile(process.env.WORDPRESS_EXPORT_PATH, "utf8");
 const attachmentUrls = [...xml.matchAll(/<wp:attachment_url><!\[CDATA\[(.*?)\]\]><\/wp:attachment_url>/g)]
-  .map((match) => match[1])
-  .filter((url) => url.startsWith("http://kimsekyu.com"));
+  .map((match) => match[1]);
+const contentAssetUrls = [...xml.matchAll(/https?:\/\/kimsekyu\.com\/wp-content\/uploads\/[^\s"'<>\\]+/g)]
+  .map((match) => match[0].replaceAll("&amp;", "&"));
 
-const uniqueUrls = [...new Set(attachmentUrls)];
+const uniqueUrls = [...new Set([...attachmentUrls, ...contentAssetUrls])]
+  .filter((url) => url.startsWith("http://kimsekyu.com/wp-content/uploads/"));
 const selectedUrls = Number.isFinite(limit) ? uniqueUrls.slice(0, limit) : uniqueUrls;
 
 function objectKeyFor(url) {
   const pathname = new URL(url).pathname;
-  const uploadPath = pathname.slice(pathname.indexOf(LEGACY_UPLOAD_PREFIX) + LEGACY_UPLOAD_PREFIX.length);
+  // URL.pathname is percent-encoded. Decode it before passing it to S3, otherwise
+  // Korean object keys are stored literally as "%EA..." and require a broken double-encoded URL.
+  const uploadPath = decodeURIComponent(pathname.slice(pathname.indexOf(LEGACY_UPLOAD_PREFIX) + LEGACY_UPLOAD_PREFIX.length));
   return `${R2_PREFIX}${uploadPath}`;
 }
 
@@ -77,7 +81,7 @@ if (dryRun) {
 }
 
 let uploaded = 0;
-const skipped = manifest.filter((item) => Boolean(state.completed[item.sourceUrl])).length;
+const skipped = manifest.filter((item) => state.completed[item.sourceUrl]?.key === item.key).length;
 let nextIndex = 0;
 let persist = Promise.resolve();
 
@@ -117,7 +121,7 @@ async function migrate(item) {
   }
 }
 
-const pending = manifest.filter((item) => !state.completed[item.sourceUrl]);
+const pending = manifest.filter((item) => state.completed[item.sourceUrl]?.key !== item.key);
 await Promise.all(Array.from({ length: Math.min(concurrency, pending.length) }, async () => {
   while (nextIndex < pending.length) {
     const item = pending[nextIndex++];
