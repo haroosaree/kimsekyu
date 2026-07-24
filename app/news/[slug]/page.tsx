@@ -62,5 +62,8 @@ export default async function NewsRoute({ params }: { params: Promise<{ slug: st
   const result = await payload.find({ collection: "news", where: { slug: { equals: slug } }, depth: 0, limit: 1, overrideAccess: true });
   const article = result.docs[0];
   if (!article) notFound();
-  return <main className="article-page"><Link href="/news" className="back-link">← 지역 소식</Link><p className="eyebrow">{article.category}</p><h1>{article.title as string}</h1><time>{new Intl.DateTimeFormat("ko-KR", { dateStyle: "long" }).format(new Date(article.publishedAt))}</time><article className="legacy-content" dangerouslySetInnerHTML={{ __html: article.contentHTML as string }} /></main>;
+  const parentArchive = Object.entries(categoryArchives).find(([, value]) => value.categories.includes(article.category as never));
+  const backHref = parentArchive ? `/news/${parentArchive[0]}` : "/news";
+  const backLabel = parentArchive ? `← ${parentArchive[1].title}` : "← 지역 소식";
+  return <main className="article-page"><Link href={backHref} className="back-link">{backLabel}</Link><p className="eyebrow">{article.category}</p><h1>{article.title as string}</h1><time>{new Intl.DateTimeFormat("ko-KR", { dateStyle: "long" }).format(new Date(article.publishedAt))}</time><article className="legacy-content" dangerouslySetInnerHTML={{ __html: article.contentHTML as string }} /></main>;
 }
