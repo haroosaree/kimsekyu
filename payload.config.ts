@@ -61,6 +61,7 @@ export default buildConfig({
         { name: "legacyUrl", type: "text", unique: true, index: true },
         { name: "contentHTML", type: "code", admin: { language: "html" }, localized: true },
         { name: "publishedAt", type: "date", required: true, index: true },
+        { name: "readCount", type: "number", required: true, defaultValue: 0, min: 0, admin: { readOnly: true } },
         { name: "legacyAuthor", type: "text" },
       ],
     },

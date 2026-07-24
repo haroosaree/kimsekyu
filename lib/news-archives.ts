@@ -26,7 +26,11 @@ export const categoryArchives = {
 } as const;
 
 export type ArchiveSlug = keyof typeof categoryArchives;
-export type NewsListItem = { id: string | number; title: string; slug: string; category: string; publishedAt: string };
+export type NewsListItem = { id: string | number; title: string; slug: string; category: string; publishedAt: string; readCount: number };
+
+export function formatUSDate(value: string) {
+  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(new Date(value)).replace(",", "");
+}
 
 export function pageFrom(value: string | undefined) {
   const page = Number(value);

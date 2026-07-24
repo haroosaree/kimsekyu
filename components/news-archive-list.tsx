@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import type { NewsListItem } from "@/lib/news-archives";
+import { formatUSDate, type NewsListItem } from "@/lib/news-archives";
 
 type Props = {
   initialItems: NewsListItem[];
@@ -11,8 +11,6 @@ type Props = {
   basePath: string;
   archive?: string;
 };
-
-const formatDate = (value: string) => new Intl.DateTimeFormat("ko-KR", { dateStyle: "medium" }).format(new Date(value));
 
 function paginationItems(currentPage: number, totalPages: number) {
   const pages = new Set([1, totalPages]);
@@ -42,7 +40,7 @@ export default function NewsArchiveList({ initialItems, initialPage, totalPages,
 
   return <>
     <div className="archive-list">{items.map((item) => <Link href={`/news/${item.slug}`} key={item.id}>
-      <span>{item.category}</span><h2>{item.title}</h2><time>{formatDate(item.publishedAt)}</time><b>↗</b>
+      <span>{item.category}</span><h2>{item.title}</h2><div className="article-meta"><time>{formatUSDate(item.publishedAt)}</time><small>조회 {item.readCount.toLocaleString("en-US")}</small></div><b>↗</b>
     </Link>)}</div>
     {totalPages > 1 && <nav className="archive-pagination" aria-label="페이지 탐색">
       <div className="desktop-pagination">{paginationItems(initialPage, totalPages).map((item, index) => typeof item === "string" ? <span className="pagination-ellipsis" key={`${item}-${index}`}>{item}</span> : <Link className={item === initialPage ? "active" : ""} href={item === 1 ? basePath : `${basePath}?page=${item}`} key={item}>{item}</Link>)}</div>

@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import NewsArchiveList from "@/components/news-archive-list";
-import { categoryArchives, PAGE_SIZE, pageFrom } from "@/lib/news-archives";
+import ArticleReadCount from "@/components/article-read-count";
+import { categoryArchives, formatUSDate, PAGE_SIZE, pageFrom } from "@/lib/news-archives";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +29,7 @@ export default async function NewsRoute({ params, searchParams }: { params: Prom
       <nav className="breadcrumb" aria-label="현재 위치"><Link href="/">홈</Link><span>›</span><span>{archive.title}</span></nav>
       <p className="eyebrow">AUSTIN INTELLIGENCE</p>
       <h1>{archive.title}</h1>
-      <NewsArchiveList initialItems={news.docs.map((item) => ({ id: item.id, title: item.title as string, slug: item.slug, category: item.category, publishedAt: item.publishedAt }))} initialPage={page} totalPages={news.totalPages} basePath={`/news/${slug}`} archive={slug} />
+      <NewsArchiveList initialItems={news.docs.map((item) => ({ id: item.id, title: item.title as string, slug: item.slug, category: item.category, publishedAt: item.publishedAt, readCount: item.readCount ?? 0 }))} initialPage={page} totalPages={news.totalPages} basePath={`/news/${slug}`} archive={slug} />
     </main>;
   }
 
@@ -38,5 +39,5 @@ export default async function NewsRoute({ params, searchParams }: { params: Prom
   const parentArchive = Object.entries(categoryArchives).find(([, value]) => value.categories.includes(article.category as never));
   const backHref = parentArchive ? `/news/${parentArchive[0]}` : "/news";
   const backLabel = parentArchive ? `← ${parentArchive[1].title}` : "← 지역 소식";
-  return <main className="article-page"><Link href={backHref} className="back-link">{backLabel}</Link><p className="eyebrow">{article.category}</p><h1>{article.title as string}</h1><time>{new Intl.DateTimeFormat("ko-KR", { dateStyle: "long" }).format(new Date(article.publishedAt))}</time><article className="legacy-content" dangerouslySetInnerHTML={{ __html: article.contentHTML as string }} /></main>;
+  return <main className="article-page"><Link href={backHref} className="back-link">{backLabel}</Link><p className="eyebrow">{article.category}</p><h1>{article.title as string}</h1><div className="article-details"><time>{formatUSDate(article.publishedAt)}</time><ArticleReadCount id={article.id} initialCount={article.readCount ?? 0} /></div><article className="legacy-content" dangerouslySetInnerHTML={{ __html: article.contentHTML as string }} /></main>;
 }

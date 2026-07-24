@@ -17,5 +17,5 @@ export async function GET(request: Request) {
     sort: "-publishedAt",
     overrideAccess: true,
   });
-  return NextResponse.json({ docs: result.docs.map((item) => ({ id: item.id, title: item.title, slug: item.slug, category: item.category, publishedAt: item.publishedAt })), page: result.page, totalPages: result.totalPages });
+  return NextResponse.json({ docs: result.docs.map((item) => ({ id: item.id, title: item.title, slug: item.slug, category: item.category, publishedAt: item.publishedAt, readCount: item.readCount ?? 0 })), page: result.page, totalPages: result.totalPages });
 }

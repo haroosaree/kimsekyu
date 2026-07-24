@@ -204,6 +204,7 @@ export interface News {
   legacyUrl?: string | null;
   contentHTML?: string | null;
   publishedAt: string;
+  readCount: number;
   legacyAuthor?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -382,6 +383,7 @@ export interface NewsSelect<T extends boolean = true> {
   legacyUrl?: T;
   contentHTML?: T;
   publishedAt?: T;
+  readCount?: T;
   legacyAuthor?: T;
   updatedAt?: T;
   createdAt?: T;

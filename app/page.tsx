@@ -4,7 +4,7 @@ import config from "@payload-config";
 
 export const dynamic = "force-dynamic";
 
-type Article = { id: string | number; title: string; slug: string; category: string; publishedAt: string };
+type Article = { id: string | number; title: string; slug: string; category: string; publishedAt: string; readCount: number };
 
 async function getLatestNews(): Promise<Article[]> {
   try {
@@ -22,13 +22,14 @@ async function getLatestNews(): Promise<Article[]> {
       slug: article.slug,
       category: article.category,
       publishedAt: article.publishedAt,
+      readCount: article.readCount ?? 0,
     }));
   } catch {
     return [];
   }
 }
 
-const formatDate = (value: string) => new Intl.DateTimeFormat("ko-KR", { dateStyle: "medium" }).format(new Date(value));
+const formatDate = (value: string) => new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(new Date(value)).replace(",", "");
 
 export default async function Home() {
   const latestNews = await getLatestNews();
@@ -80,7 +81,7 @@ export default async function Home() {
         <div className="news-grid">
           {latestNews.length > 0 ? latestNews.map((article) => (
             <Link className="news-card" href={`/news/${article.slug}`} key={article.id}>
-              <div><span>{article.category.replace("legacy-board-", "Austin Report ")}</span><time>{formatDate(article.publishedAt)}</time></div>
+              <div><span>{article.category.replace("legacy-board-", "Austin Report ")}</span><time>{formatDate(article.publishedAt)} · 조회 {article.readCount.toLocaleString("en-US")}</time></div>
               <h3>{article.title}</h3><b>Read story <span>↗</span></b>
             </Link>
           )) : ["오스틴의 시장을 읽는 새로운 방법", "센트럴 텍사스, 다음 성장의 중심", "좋은 동네를 고르는 기준"].map((title, index) => (
