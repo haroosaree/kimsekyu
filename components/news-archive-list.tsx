@@ -43,7 +43,11 @@ export default function NewsArchiveList({ initialItems, initialPage, totalPages,
       <div className="archive-thumbnail">{item.thumbnailURL && <img src={item.thumbnailURL} alt="" />}</div><h2>{item.title}</h2><div className="article-meta"><time>{formatUSDate(item.publishedAt)}</time><small>조회 {item.viewCount.toLocaleString("en-US")}</small></div><b>↗</b>
     </Link>)}</div>
     {totalPages > 1 && <nav className="archive-pagination" aria-label="페이지 탐색">
-      <div className="desktop-pagination">{paginationItems(initialPage, totalPages).map((item, index) => typeof item === "string" ? <span className="pagination-ellipsis" key={`${item}-${index}`}>{item}</span> : <Link className={item === initialPage ? "active" : ""} href={item === 1 ? basePath : `${basePath}?page=${item}`} key={item}>{item}</Link>)}</div>
+      <div className="desktop-pagination">
+        {initialPage > 1 ? <Link className="pagination-arrow" href={initialPage === 2 ? basePath : `${basePath}?page=${initialPage - 1}`} aria-label="Previous page">←</Link> : <span className="pagination-arrow disabled" aria-hidden="true">←</span>}
+        {paginationItems(initialPage, totalPages).map((item, index) => typeof item === "string" ? <span className="pagination-ellipsis" key={`${item}-${index}`}>{item}</span> : <Link className={item === initialPage ? "active" : ""} href={item === 1 ? basePath : `${basePath}?page=${item}`} key={item}>{item}</Link>)}
+        {initialPage < totalPages ? <Link className="pagination-arrow" href={`${basePath}?page=${initialPage + 1}`} aria-label="Next page">→</Link> : <span className="pagination-arrow disabled" aria-hidden="true">→</span>}
+      </div>
       {hasMore && <button type="button" className="mobile-more" onClick={loadMore} disabled={loading}>{loading ? "불러오는 중…" : "Show more · 더보기"}<span>↓</span></button>}
     </nav>}
   </>;
