@@ -29,6 +29,8 @@ const postType = (item: LegacyItem) => string(item["wp:post_type"]);
 const postStatus = (item: LegacyItem) => string(item["wp:status"]);
 const rewriteAssetUrls = (html: string) =>
   html.replaceAll("http://kimsekyu.com/wp-content/uploads/", `${publicAssetBaseUrl}/legacy/wordpress/uploads/`);
+const normalizeLineBreaks = (html: string) => html.replace(/\r?\n+/g, "<br><br>");
+const prepareHTML = (html: string) => normalizeLineBreaks(rewriteAssetUrls(html));
 const dateISO = (value: string) => new Date(`${value.replace(" ", "T")}Z`).toISOString();
 const safeSlug = (value: string, fallback: string) => value || fallback;
 
@@ -69,7 +71,7 @@ async function upsertPage(item: LegacyItem) {
     title: string(item.title) || `Untitled legacy page ${string(item["wp:post_id"])}`,
     slug: safeSlug(string(item["wp:post_name"]), `legacy-page-${string(item["wp:post_id"])}`),
     legacyUrl,
-    contentHTML: rewriteAssetUrls(string(item["content:encoded"])),
+    contentHTML: prepareHTML(string(item["content:encoded"])),
     publishedAt: dateISO(string(item["wp:post_date_gmt"]) || string(item["wp:post_date"])),
   };
   if (existingId) {
@@ -91,7 +93,7 @@ async function upsertNews(item: LegacyItem, category: string, legacyBoardId?: st
     legacyId,
     legacyBoardId,
     legacyUrl: string(item.link),
-    contentHTML: rewriteAssetUrls(string(item["content:encoded"])),
+    contentHTML: prepareHTML(string(item["content:encoded"])),
     publishedAt: dateISO(string(item["wp:post_date_gmt"]) || string(item["wp:post_date"])),
     legacyAuthor: string(item["dc:creator"]),
   };
