@@ -40,7 +40,7 @@ export default function NewsArchiveList({ initialItems, initialPage, totalPages,
 
   return <>
     <div className="archive-list">{items.map((item) => <Link href={`/news/${item.slug}`} key={item.id}>
-      <span>{item.category}</span><h2>{item.title}</h2><div className="article-meta"><time>{formatUSDate(item.publishedAt)}</time><small>조회 {item.viewCount.toLocaleString("en-US")}</small></div><b>↗</b>
+      <div className="archive-thumbnail">{item.thumbnailURL && <img src={item.thumbnailURL} alt="" />}</div><h2>{item.title}</h2><div className="article-meta"><time>{formatUSDate(item.publishedAt)}</time><small>조회 {item.viewCount.toLocaleString("en-US")}</small></div><b>↗</b>
     </Link>)}</div>
     {totalPages > 1 && <nav className="archive-pagination" aria-label="페이지 탐색">
       <div className="desktop-pagination">{paginationItems(initialPage, totalPages).map((item, index) => typeof item === "string" ? <span className="pagination-ellipsis" key={`${item}-${index}`}>{item}</span> : <Link className={item === initialPage ? "active" : ""} href={item === 1 ? basePath : `${basePath}?page=${item}`} key={item}>{item}</Link>)}</div>

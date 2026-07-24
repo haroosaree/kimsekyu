@@ -5,7 +5,7 @@ import config from "@payload-config";
 import NewsArchiveList from "@/components/news-archive-list";
 import ArticleReadCount from "@/components/article-read-count";
 import { categoryArchives, formatUSDate, PAGE_SIZE, pageFrom } from "@/lib/news-archives";
-import { displayLegacyHTML } from "@/lib/legacy-html";
+import { displayLegacyHTML, legacyThumbnailURL } from "@/lib/legacy-html";
 
 export const dynamic = "force-dynamic";
 
@@ -30,7 +30,7 @@ export default async function NewsRoute({ params, searchParams }: { params: Prom
       <nav className="breadcrumb" aria-label="현재 위치"><Link href="/">홈</Link><span>›</span><span>{archive.title}</span></nav>
       <p className="eyebrow">AUSTIN INTELLIGENCE</p>
       <h1>{archive.title}</h1>
-      <NewsArchiveList initialItems={news.docs.map((item) => ({ id: item.id, title: item.title as string, slug: item.slug, category: item.category, publishedAt: item.publishedAt, viewCount: (item.legacyViewCount ?? 0) + (item.readCount ?? 0) }))} initialPage={page} totalPages={news.totalPages} basePath={`/news/${slug}`} archive={slug} />
+      <NewsArchiveList initialItems={news.docs.map((item) => ({ id: item.id, title: item.title as string, slug: item.slug, publishedAt: item.publishedAt, viewCount: (item.legacyViewCount ?? 0) + (item.readCount ?? 0), thumbnailURL: legacyThumbnailURL(item.contentHTML as string) }))} initialPage={page} totalPages={news.totalPages} basePath={`/news/${slug}`} archive={slug} />
     </main>;
   }
 
