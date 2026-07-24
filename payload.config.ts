@@ -130,6 +130,100 @@ export default buildConfig({
         },
       ],
     },
+    {
+      slug: "homepage",
+      label: "Homepage",
+      fields: [
+        {
+          type: "group",
+          name: "hero",
+          fields: [
+            { name: "eyebrow", type: "text", localized: true },
+            { name: "heading", type: "textarea", localized: true, admin: { description: "Use a new line where the heading should break." } },
+            { name: "emphasis", type: "text", localized: true },
+            { name: "description", type: "textarea", localized: true },
+            { name: "primaryLabel", type: "text", localized: true },
+            { name: "primaryHref", type: "text" },
+            { name: "secondaryLabel", type: "text", localized: true },
+            { name: "secondaryHref", type: "text" },
+            { name: "sideNote", type: "textarea", localized: true },
+          ],
+        },
+        {
+          type: "group",
+          name: "introduction",
+          fields: [
+            { name: "eyebrow", type: "text", localized: true },
+            { name: "heading", type: "textarea", localized: true, admin: { description: "Use a new line where the heading should break." } },
+            { name: "emphasis", type: "text", localized: true },
+            { name: "description", type: "textarea", localized: true },
+            { name: "linkLabel", type: "text", localized: true },
+            { name: "linkHref", type: "text" },
+            {
+              name: "stats",
+              type: "array",
+              fields: [{ name: "value", type: "text", required: true }, { name: "label", type: "text", required: true, localized: true }],
+            },
+          ],
+        },
+        {
+          type: "group",
+          name: "services",
+          fields: [
+            { name: "eyebrow", type: "text", localized: true },
+            {
+              name: "cards",
+              type: "array",
+              fields: [
+                { name: "title", type: "text", required: true, localized: true },
+                { name: "description", type: "textarea", localized: true },
+                { name: "linkLabel", type: "text", localized: true },
+                { name: "linkHref", type: "text" },
+              ],
+            },
+          ],
+        },
+        {
+          type: "group",
+          name: "newsSection",
+          fields: [
+            { name: "eyebrow", type: "text", localized: true },
+            { name: "heading", type: "text", localized: true },
+            { name: "allLinkLabel", type: "text", localized: true },
+            { name: "allLinkHref", type: "text" },
+            { name: "readLabel", type: "text", localized: true },
+            { name: "articleLinkLabel", type: "text", localized: true },
+            { name: "emptyStateLabel", type: "text", localized: true },
+            { name: "emptyCardTitles", type: "array", fields: [{ name: "title", type: "text", required: true, localized: true }] },
+          ],
+        },
+        {
+          type: "group",
+          name: "contact",
+          fields: [
+            { name: "eyebrow", type: "text", localized: true },
+            { name: "heading", type: "textarea", localized: true, admin: { description: "Use a new line where the heading should break." } },
+            { name: "emphasis", type: "text", localized: true },
+            { name: "introduction", type: "textarea", localized: true },
+            { name: "phone", type: "text" },
+            { name: "email", type: "email" },
+            { name: "profileImage", type: "upload", relationTo: "media" },
+            { name: "profileName", type: "text", localized: true },
+            { name: "profileCaption", type: "textarea", localized: true },
+          ],
+        },
+        {
+          type: "group",
+          name: "footer",
+          fields: [
+            { name: "kicker", type: "text", localized: true },
+            { name: "brand", type: "text", localized: true },
+            { name: "company", type: "textarea", localized: true },
+            { name: "copyright", type: "text", localized: true, admin: { description: "Use {year} for the current year." } },
+          ],
+        },
+      ],
+    },
   ],
   localization: {
     locales: [

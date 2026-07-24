@@ -96,10 +96,12 @@ export interface Config {
   globals: {
     'site-settings': SiteSetting;
     navigation: Navigation;
+    homepage: Homepage;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     navigation: NavigationSelect<false> | NavigationSelect<true>;
+    homepage: HomepageSelect<false> | HomepageSelect<true>;
   };
   locale: 'ko' | 'en';
   widgets: {
@@ -483,6 +485,97 @@ export interface Navigation {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage".
+ */
+export interface Homepage {
+  id: number;
+  hero?: {
+    eyebrow?: string | null;
+    /**
+     * Use a new line where the heading should break.
+     */
+    heading?: string | null;
+    emphasis?: string | null;
+    description?: string | null;
+    primaryLabel?: string | null;
+    primaryHref?: string | null;
+    secondaryLabel?: string | null;
+    secondaryHref?: string | null;
+    sideNote?: string | null;
+  };
+  introduction?: {
+    eyebrow?: string | null;
+    /**
+     * Use a new line where the heading should break.
+     */
+    heading?: string | null;
+    emphasis?: string | null;
+    description?: string | null;
+    linkLabel?: string | null;
+    linkHref?: string | null;
+    stats?:
+      | {
+          value: string;
+          label: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  services?: {
+    eyebrow?: string | null;
+    cards?:
+      | {
+          title: string;
+          description?: string | null;
+          linkLabel?: string | null;
+          linkHref?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  newsSection?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    allLinkLabel?: string | null;
+    allLinkHref?: string | null;
+    readLabel?: string | null;
+    articleLinkLabel?: string | null;
+    emptyStateLabel?: string | null;
+    emptyCardTitles?:
+      | {
+          title: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  contact?: {
+    eyebrow?: string | null;
+    /**
+     * Use a new line where the heading should break.
+     */
+    heading?: string | null;
+    emphasis?: string | null;
+    introduction?: string | null;
+    phone?: string | null;
+    email?: string | null;
+    profileImage?: (number | null) | Media;
+    profileName?: string | null;
+    profileCaption?: string | null;
+  };
+  footer?: {
+    kicker?: string | null;
+    brand?: string | null;
+    company?: string | null;
+    /**
+     * Use {year} for the current year.
+     */
+    copyright?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
@@ -504,6 +597,97 @@ export interface NavigationSelect<T extends boolean = true> {
         legacyUrl?: T;
         openInNewTab?: T;
         id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage_select".
+ */
+export interface HomepageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        emphasis?: T;
+        description?: T;
+        primaryLabel?: T;
+        primaryHref?: T;
+        secondaryLabel?: T;
+        secondaryHref?: T;
+        sideNote?: T;
+      };
+  introduction?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        emphasis?: T;
+        description?: T;
+        linkLabel?: T;
+        linkHref?: T;
+        stats?:
+          | T
+          | {
+              value?: T;
+              label?: T;
+              id?: T;
+            };
+      };
+  services?:
+    | T
+    | {
+        eyebrow?: T;
+        cards?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              linkLabel?: T;
+              linkHref?: T;
+              id?: T;
+            };
+      };
+  newsSection?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        allLinkLabel?: T;
+        allLinkHref?: T;
+        readLabel?: T;
+        articleLinkLabel?: T;
+        emptyStateLabel?: T;
+        emptyCardTitles?:
+          | T
+          | {
+              title?: T;
+              id?: T;
+            };
+      };
+  contact?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        emphasis?: T;
+        introduction?: T;
+        phone?: T;
+        email?: T;
+        profileImage?: T;
+        profileName?: T;
+        profileCaption?: T;
+      };
+  footer?:
+    | T
+    | {
+        kicker?: T;
+        brand?: T;
+        company?: T;
+        copyright?: T;
       };
   updatedAt?: T;
   createdAt?: T;
