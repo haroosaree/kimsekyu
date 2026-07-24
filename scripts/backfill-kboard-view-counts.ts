@@ -33,9 +33,18 @@ function rowsFrom(html: string) {
 }
 
 async function fetchText(url: string) {
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(`HTTP ${response.status}: ${url}`);
-  return response.text();
+  let lastError: unknown;
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP ${response.status}: ${url}`);
+      return await response.text();
+    } catch (error) {
+      lastError = error;
+      await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
+    }
+  }
+  throw lastError;
 }
 
 const payload = await getPayload({ config });
@@ -52,7 +61,7 @@ const jobs = boardFirstPages.flatMap(({ base, html }) => Array.from({ length: pa
 const counts = new Map<string, number>();
 let next = 0;
 
-await Promise.all(Array.from({ length: 5 }, async () => {
+await Promise.all(Array.from({ length: 2 }, async () => {
   while (next < jobs.length) {
     const job = jobs[next++];
     const html = job.html ?? await fetchText(listURL(job.base, job.page));
