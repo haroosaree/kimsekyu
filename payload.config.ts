@@ -11,6 +11,7 @@ const isAdmin = ({ req }: { req: { user?: unknown } }) => Boolean(req.user);
 export default buildConfig({
   admin: {
     user: "users",
+    theme: "light",
     importMap: { baseDir: process.cwd() },
   },
   collections: [
