@@ -2,7 +2,10 @@ import { postgresAdapter } from "@payloadcms/db-postgres";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
 
-const publicAssetBaseUrl = process.env.R2_PUBLIC_BASE_URL?.replace(/\/$/, "");
+const mediaCollectionPrefix = "site/general";
+const publicAssetBaseUrl = process.env.R2_PUBLIC_BASE_URL
+  ?.replace(/\/$/, "")
+  .replace(new RegExp(`/${mediaCollectionPrefix}(?:/${mediaCollectionPrefix})*$`), "");
 const isAdmin = ({ req }: { req: { user?: unknown } }) => Boolean(req.user);
 
 export default buildConfig({
@@ -24,10 +27,14 @@ export default buildConfig({
       hooks: {
         afterRead: [({ doc }) => {
           if (!publicAssetBaseUrl || !doc.filename) return doc;
-          const prefix = doc.prefix ? doc.prefix.replace(/^\/+|\/+$/g, "") : "site/general";
+          const prefix = doc.prefix
+            ? doc.prefix
+              .replace(/^\/+|\/+$/g, "")
+              .replace(new RegExp(`^(?:${mediaCollectionPrefix}/?)+`), "")
+            : "";
           return {
             ...doc,
-            url: `${publicAssetBaseUrl}/${prefix}/${encodeURIComponent(doc.filename)}`,
+            url: `${publicAssetBaseUrl}/${[mediaCollectionPrefix, prefix, encodeURIComponent(doc.filename)].filter(Boolean).join("/")}`,
           };
         }],
       },
@@ -255,7 +262,7 @@ export default buildConfig({
         region: "auto",
       },
       collections: {
-        media: { prefix: "site/general" },
+        media: { prefix: mediaCollectionPrefix },
       },
     }),
   ],
