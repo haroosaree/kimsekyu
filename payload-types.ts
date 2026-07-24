@@ -475,6 +475,10 @@ export interface SiteSetting {
  */
 export interface Navigation {
   id: number;
+  /**
+   * Legacy-style banner displayed on menu landing pages. The gradient overlay remains applied automatically.
+   */
+  bannerImage?: (number | null) | Media;
   items?:
     | {
         label: string;
@@ -594,6 +598,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
  * via the `definition` "navigation_select".
  */
 export interface NavigationSelect<T extends boolean = true> {
+  bannerImage?: T;
   items?:
     | T
     | {

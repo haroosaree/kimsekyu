@@ -7,8 +7,8 @@ export default async function MenuHero() {
   let imageURL = fallbackImage;
   try {
     const payload = await getPayload({ config });
-    const settings = await payload.findGlobal({ slug: "site-settings", depth: 1, overrideAccess: true });
-    const image = settings.menuHeroImage as { url?: string } | null;
+    const navigation = await payload.findGlobal({ slug: "navigation", depth: 1, overrideAccess: true });
+    const image = navigation.bannerImage as { url?: string } | null;
     if (image?.url) imageURL = image.url;
   } catch {
     // Retain the migrated legacy banner when the CMS is temporarily unavailable.

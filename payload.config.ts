@@ -138,7 +138,18 @@ export default buildConfig({
     },
     {
       slug: "navigation",
+      label: "Navigation menu",
+      access: {
+        read: () => true,
+        update: isAdmin,
+      },
       fields: [
+        {
+          name: "bannerImage",
+          type: "upload",
+          relationTo: "media",
+          admin: { description: "Legacy-style banner displayed on menu landing pages. The gradient overlay remains applied automatically." },
+        },
         {
           name: "items",
           type: "array",
