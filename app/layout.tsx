@@ -13,8 +13,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Kim Sekyu | Real Estate",
-  description: "Kim Sekyu Real Estate",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SERVER_URL || "https://kimsekyu.com"),
+  title: "김세규 부동산 | Austin Real Estate",
+  description: "오스틴과 센트럴 텍사스의 주거용·상업용 부동산 파트너, 김세규 부동산.",
+  openGraph: {
+    title: "김세규 부동산 | Austin Real Estate",
+    description: "오스틴과 센트럴 텍사스의 주거용·상업용 부동산 파트너.",
+    images: ["/og.png"],
+  },
 };
 
 export default function RootLayout({
@@ -24,7 +30,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="ko"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
