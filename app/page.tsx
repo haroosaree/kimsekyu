@@ -22,7 +22,7 @@ async function getLatestNews(): Promise<Article[]> {
       slug: article.slug,
       category: article.category,
       publishedAt: article.publishedAt,
-      readCount: (article.legacyViewCount ?? 0) + (article.readCount ?? 0),
+      readCount: article.viewCount ?? 0,
     }));
   } catch {
     return [];

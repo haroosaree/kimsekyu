@@ -18,5 +18,5 @@ export async function GET(request: Request) {
     sort: "-publishedAt",
     overrideAccess: true,
   });
-  return NextResponse.json({ docs: result.docs.map((item) => ({ id: item.id, title: item.title, slug: item.slug, publishedAt: item.publishedAt, viewCount: (item.legacyViewCount ?? 0) + (item.readCount ?? 0), thumbnailURL: legacyThumbnailURL(item.contentHTML as string) })), page: result.page, totalPages: result.totalPages });
+  return NextResponse.json({ docs: result.docs.map((item) => ({ id: item.id, title: item.title, slug: item.slug, publishedAt: item.publishedAt, viewCount: item.viewCount ?? 0, thumbnailURL: legacyThumbnailURL(item.contentHTML as string) })), page: result.page, totalPages: result.totalPages });
 }

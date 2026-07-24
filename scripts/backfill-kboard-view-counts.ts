@@ -62,7 +62,8 @@ await Promise.all(Array.from({ length: 5 }, async () => {
 
 const updates = [...counts].flatMap(([uid, legacyViewCount]) => {
   const item = newsByKboardUID.get(uid);
-  return item && item.legacyViewCount !== legacyViewCount ? [{ id: item.id, legacyViewCount }] : [];
+  const viewCount = Math.max(item?.viewCount ?? 0, legacyViewCount + (item?.readCount ?? 0));
+  return item && (item.legacyViewCount !== legacyViewCount || item.viewCount !== viewCount) ? [{ id: item.id, legacyViewCount, viewCount }] : [];
 });
 
 console.log(`Collected ${counts.size} KBoard counts across ${jobs.length} list pages; ${updates.length} News records need updates.`);
@@ -71,7 +72,7 @@ if (!dryRun) {
   await Promise.all(Array.from({ length: 6 }, async () => {
     while (updateIndex < updates.length) {
       const update = updates[updateIndex++];
-      await payload.update({ collection: "news", id: update.id, data: { legacyViewCount: update.legacyViewCount }, overrideAccess: true });
+      await payload.update({ collection: "news", id: update.id, data: { legacyViewCount: update.legacyViewCount, viewCount: update.viewCount }, overrideAccess: true });
       if (updateIndex % 100 === 0 || updateIndex === updates.length) console.log(`Updated ${updateIndex}/${updates.length}`);
     }
   }));

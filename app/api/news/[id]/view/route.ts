@@ -6,6 +6,6 @@ export async function POST(_: Request, { params }: { params: Promise<{ id: strin
   const { id } = await params;
   const payload = await getPayload({ config });
   const article = await payload.findByID({ collection: "news", id, depth: 0, overrideAccess: true });
-  const updated = await payload.update({ collection: "news", id, data: { readCount: (article.readCount ?? 0) + 1 }, overrideAccess: true });
-  return NextResponse.json({ readCount: (updated.legacyViewCount ?? 0) + (updated.readCount ?? 0) });
+  const updated = await payload.update({ collection: "news", id, data: { viewCount: (article.viewCount ?? 0) + 1 }, overrideAccess: true });
+  return NextResponse.json({ readCount: updated.viewCount ?? 0 });
 }

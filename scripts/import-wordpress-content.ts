@@ -100,11 +100,12 @@ async function upsertNews(item: LegacyItem, category: string, legacyBoardId?: st
     contentHTML: prepareHTML(string(item["content:encoded"])),
     publishedAt: dateISO(string(item["wp:post_date_gmt"]) || string(item["wp:post_date"])),
     legacyViewCount: 0,
+    viewCount: 0,
     readCount: 0,
     legacyAuthor: string(item["dc:creator"]),
   };
   if (existingId) {
-    const { legacyViewCount: __, readCount: _, ...updateData } = data;
+    const { legacyViewCount: ___, viewCount: __, readCount: _, ...updateData } = data;
     await payload.update({ collection: "news", id: existingId, data: updateData, overrideAccess: true });
     updated += 1;
   } else {
