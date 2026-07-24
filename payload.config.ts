@@ -24,10 +24,10 @@ export default buildConfig({
       hooks: {
         afterRead: [({ doc }) => {
           if (!publicAssetBaseUrl || !doc.filename) return doc;
-          const prefix = doc.prefix ? `${doc.prefix.replace(/^\/+|\/+$/g, "")}/` : "";
+          const prefix = doc.prefix ? doc.prefix.replace(/^\/+|\/+$/g, "") : "site/general";
           return {
             ...doc,
-            url: `${publicAssetBaseUrl}/site/general/${prefix}${encodeURIComponent(doc.filename)}`,
+            url: `${publicAssetBaseUrl}/${prefix}/${encodeURIComponent(doc.filename)}`,
           };
         }],
       },
