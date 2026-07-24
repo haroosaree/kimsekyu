@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     pages: Page;
     news: News;
+    questions: Question;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -82,6 +83,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     news: NewsSelect<false> | NewsSelect<true>;
+    questions: QuestionsSelect<false> | QuestionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -208,6 +210,23 @@ export interface News {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "questions".
+ */
+export interface Question {
+  id: number;
+  subject: string;
+  message: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  status: 'new' | 'in-progress' | 'resolved';
+  answer?: string | null;
+  answeredAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -245,6 +264,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'news';
         value: number | News;
+      } | null)
+    | ({
+        relationTo: 'questions';
+        value: number | Question;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -360,6 +383,22 @@ export interface NewsSelect<T extends boolean = true> {
   contentHTML?: T;
   publishedAt?: T;
   legacyAuthor?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "questions_select".
+ */
+export interface QuestionsSelect<T extends boolean = true> {
+  subject?: T;
+  message?: T;
+  name?: T;
+  email?: T;
+  phone?: T;
+  status?: T;
+  answer?: T;
+  answeredAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -3,6 +3,7 @@ import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
 
 const publicAssetBaseUrl = process.env.R2_PUBLIC_BASE_URL?.replace(/\/$/, "");
+const isAdmin = ({ req }: { req: { user?: unknown } }) => Boolean(req.user);
 
 export default buildConfig({
   admin: {
@@ -61,6 +62,40 @@ export default buildConfig({
         { name: "contentHTML", type: "code", admin: { language: "html" }, localized: true },
         { name: "publishedAt", type: "date", required: true, index: true },
         { name: "legacyAuthor", type: "text" },
+      ],
+    },
+    {
+      slug: "questions",
+      admin: { useAsTitle: "subject", defaultColumns: ["subject", "status", "name", "createdAt"] },
+      access: {
+        create: () => true,
+        read: isAdmin,
+        update: isAdmin,
+        delete: isAdmin,
+      },
+      fields: [
+        { name: "subject", type: "text", required: true },
+        { name: "message", type: "textarea", required: true },
+        { name: "name", type: "text", required: true },
+        { name: "email", type: "email", required: true },
+        { name: "phone", type: "text" },
+        {
+          name: "status",
+          type: "select",
+          required: true,
+          defaultValue: "new",
+          options: [
+            { label: "New", value: "new" },
+            { label: "In progress", value: "in-progress" },
+            { label: "Resolved", value: "resolved" },
+          ],
+        },
+        {
+          name: "answer",
+          type: "textarea",
+          access: { read: isAdmin, create: isAdmin, update: isAdmin },
+        },
+        { name: "answeredAt", type: "date", access: { read: isAdmin, create: isAdmin, update: isAdmin } },
       ],
     },
   ],
