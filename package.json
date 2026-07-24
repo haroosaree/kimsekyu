@@ -9,10 +9,12 @@
     "start": "next start",
     "lint": "eslint",
     "migrate:media": "node --env-file=.env scripts/migrate-wordpress-media.mjs",
-    "migrate:content": "node --env-file=.env --import tsx scripts/import-wordpress-content.ts"
+    "migrate:content": "node --env-file=.env --import tsx scripts/import-wordpress-content.ts",
+    "migrate:finalize": "node --env-file=.env --import tsx scripts/finalize-legacy-taxonomy.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1093.0",
+    "@kfonts/nanum-square": "^0.2.0",
     "@payloadcms/db-postgres": "^3.86.0",
     "@payloadcms/next": "^3.86.0",
     "@payloadcms/storage-s3": "^3.86.0",

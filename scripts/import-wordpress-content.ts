@@ -54,25 +54,26 @@ if (dryRun) {
 const payload = await getPayload({ config });
 let created = 0;
 let updated = 0;
+let processed = 0;
+const [existingPages, existingNews] = await Promise.all([
+  payload.find({ collection: "pages", limit: 1000, depth: 0, overrideAccess: true }),
+  payload.find({ collection: "news", limit: 5000, depth: 0, overrideAccess: true }),
+]);
+const pageIdsByLegacyUrl = new Map(existingPages.docs.map((doc) => [doc.legacyUrl, doc.id]));
+const newsIdsByLegacyId = new Map(existingNews.docs.map((doc) => [doc.legacyId, doc.id]));
 
 async function upsertPage(item: LegacyItem) {
   const legacyUrl = string(item.link);
-  const existing = await payload.find({
-    collection: "pages",
-    where: { legacyUrl: { equals: legacyUrl } },
-    limit: 1,
-    depth: 0,
-    overrideAccess: true,
-  });
+  const existingId = pageIdsByLegacyUrl.get(legacyUrl);
   const data = {
-    title: string(item.title),
+    title: string(item.title) || `Untitled legacy page ${string(item["wp:post_id"])}`,
     slug: safeSlug(string(item["wp:post_name"]), `legacy-page-${string(item["wp:post_id"])}`),
     legacyUrl,
     contentHTML: rewriteAssetUrls(string(item["content:encoded"])),
     publishedAt: dateISO(string(item["wp:post_date_gmt"]) || string(item["wp:post_date"])),
   };
-  if (existing.docs[0]) {
-    await payload.update({ collection: "pages", id: existing.docs[0].id, data, overrideAccess: true });
+  if (existingId) {
+    await payload.update({ collection: "pages", id: existingId, data, overrideAccess: true });
     updated += 1;
   } else {
     await payload.create({ collection: "pages", data, overrideAccess: true });
@@ -82,15 +83,9 @@ async function upsertPage(item: LegacyItem) {
 
 async function upsertNews(item: LegacyItem, category: string, legacyBoardId?: string) {
   const legacyId = string(item["wp:post_id"]);
-  const existing = await payload.find({
-    collection: "news",
-    where: { legacyId: { equals: legacyId } },
-    limit: 1,
-    depth: 0,
-    overrideAccess: true,
-  });
+  const existingId = newsIdsByLegacyId.get(legacyId);
   const data = {
-    title: string(item.title),
+    title: string(item.title) || `Untitled legacy article ${legacyId}`,
     slug: safeSlug(string(item["wp:post_name"]), `legacy-news-${legacyId}`),
     category,
     legacyId,
@@ -100,8 +95,8 @@ async function upsertNews(item: LegacyItem, category: string, legacyBoardId?: st
     publishedAt: dateISO(string(item["wp:post_date_gmt"]) || string(item["wp:post_date"])),
     legacyAuthor: string(item["dc:creator"]),
   };
-  if (existing.docs[0]) {
-    await payload.update({ collection: "news", id: existing.docs[0].id, data, overrideAccess: true });
+  if (existingId) {
+    await payload.update({ collection: "news", id: existingId, data, overrideAccess: true });
     updated += 1;
   } else {
     await payload.create({ collection: "news", data, overrideAccess: true });
@@ -109,12 +104,23 @@ async function upsertNews(item: LegacyItem, category: string, legacyBoardId?: st
   }
 }
 
-for (const item of pages) await upsertPage(item);
-for (const item of kboard) {
-  const boardId = string(item["wp:post_parent"]);
-  await upsertNews(item, `legacy-board-${boardId}`, boardId);
-}
-for (const item of posts) await upsertNews(item, "blog");
+const tasks = [
+  ...pages.map((item) => () => upsertPage(item)),
+  ...kboard.map((item) => () => {
+    const boardId = string(item["wp:post_parent"]);
+    return upsertNews(item, `legacy-board-${boardId}`, boardId);
+  }),
+  ...posts.map((item) => () => upsertNews(item, "blog")),
+];
+let nextTask = 0;
+await Promise.all(Array.from({ length: 4 }, async () => {
+  while (nextTask < tasks.length) {
+    const task = tasks[nextTask++];
+    await task();
+    processed += 1;
+    if (processed % 100 === 0 || processed === tasks.length) console.log(`Imported ${processed}/${tasks.length}`);
+  }
+}));
 
 console.log(`Content import complete: ${created} created, ${updated} updated.`);
 }
