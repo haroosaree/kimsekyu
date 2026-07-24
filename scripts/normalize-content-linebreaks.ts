@@ -1,12 +1,12 @@
 import { getPayload } from "payload";
 import config from "@payload-config";
 
-const normalizeLineBreaks = (html: string) => html.replace(/\r?\n+/g, "<br><br>");
+const normalizeLineBreaks = (html: string) => html.replace(/\r?\n+/g, "<br>").replace(/(<br\s*\/?>(?:\s|&nbsp;)*){2,}/gi, "<br>");
 
 async function normalizeCollection(collection: "pages" | "news") {
   const payload = await getPayload({ config });
   const result = await payload.find({ collection, limit: 5000, depth: 0, overrideAccess: true });
-  const records = result.docs.filter((record) => typeof record.contentHTML === "string" && /\r?\n/.test(record.contentHTML));
+  const records = result.docs.filter((record) => typeof record.contentHTML === "string" && (/\r?\n/.test(record.contentHTML) || /(<br\s*\/?>(?:\s|&nbsp;)*){2,}/i.test(record.contentHTML)));
   let next = 0;
   let updated = 0;
 
