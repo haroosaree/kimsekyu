@@ -20,7 +20,7 @@ export default function QuestionForm() {
 
   if (state === "sent") return <p className="question-success">질문이 접수되었습니다. 확인 후 연락드리겠습니다.</p>;
 
-  return <form className="question-form" onSubmit={submit}>
+  return <form id="ask" className="question-form" onSubmit={submit}>
     <label>제목<input required maxLength={160} value={values.subject} onChange={(event) => setValues({ ...values, subject: event.target.value })} /></label>
     <label>질문 내용<textarea required maxLength={5000} rows={7} value={values.message} onChange={(event) => setValues({ ...values, message: event.target.value })} /></label>
     <div className="question-form-row"><label>이름<input required value={values.name} onChange={(event) => setValues({ ...values, name: event.target.value })} /></label><label>이메일<input required type="email" value={values.email} onChange={(event) => setValues({ ...values, email: event.target.value })} /></label></div>
