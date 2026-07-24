@@ -11,5 +11,5 @@ export default async function NewsIndex({ searchParams }: { searchParams: Promis
   const payload = await getPayload({ config });
   const news = await payload.find({ collection: "news", depth: 0, limit: PAGE_SIZE, page, sort: "-publishedAt", overrideAccess: true });
   const initialItems = news.docs.map((item) => ({ id: item.id, title: item.title as string, slug: item.slug, category: item.category, publishedAt: item.publishedAt }));
-  return <main className="archive-page"><Link href="/" className="back-link">← 김세규 부동산</Link><p className="eyebrow">AUSTIN INTELLIGENCE</p><h1>지역 소식</h1><NewsArchiveList initialItems={initialItems} initialPage={page} totalPages={news.totalPages} basePath="/news" /></main>;
+  return <main className="archive-page"><nav className="breadcrumb" aria-label="현재 위치"><Link href="/">홈</Link><span>›</span><span>지역 소식</span></nav><p className="eyebrow">AUSTIN INTELLIGENCE</p><h1>지역 소식</h1><NewsArchiveList initialItems={initialItems} initialPage={page} totalPages={news.totalPages} basePath="/news" /></main>;
 }

@@ -25,7 +25,7 @@ export default async function NewsRoute({ params, searchParams }: { params: Prom
     });
 
     return <main className="archive-page">
-      <Link href="/news" className="back-link">← 지역 소식 전체보기</Link>
+      <nav className="breadcrumb" aria-label="현재 위치"><Link href="/">홈</Link><span>›</span><span>{archive.title}</span></nav>
       <p className="eyebrow">AUSTIN INTELLIGENCE</p>
       <h1>{archive.title}</h1>
       <NewsArchiveList initialItems={news.docs.map((item) => ({ id: item.id, title: item.title as string, slug: item.slug, category: item.category, publishedAt: item.publishedAt }))} initialPage={page} totalPages={news.totalPages} basePath={`/news/${slug}`} archive={slug} />
