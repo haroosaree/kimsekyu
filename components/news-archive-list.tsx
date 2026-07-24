@@ -14,6 +14,13 @@ type Props = {
 
 const formatDate = (value: string) => new Intl.DateTimeFormat("ko-KR", { dateStyle: "medium" }).format(new Date(value));
 
+function paginationItems(currentPage: number, totalPages: number) {
+  const pages = new Set([1, totalPages]);
+  for (let page = Math.max(1, currentPage - 2); page <= Math.min(totalPages, currentPage + 2); page += 1) pages.add(page);
+  const sorted = [...pages].sort((a, b) => a - b);
+  return sorted.flatMap((page, index) => index > 0 && page - sorted[index - 1] > 1 ? (["…", page] as const) : ([page] as const));
+}
+
 export default function NewsArchiveList({ initialItems, initialPage, totalPages, basePath, archive }: Props) {
   const [items, setItems] = useState(initialItems);
   const [nextPage, setNextPage] = useState(initialPage + 1);
@@ -38,7 +45,7 @@ export default function NewsArchiveList({ initialItems, initialPage, totalPages,
       <span>{item.category}</span><h2>{item.title}</h2><time>{formatDate(item.publishedAt)}</time><b>↗</b>
     </Link>)}</div>
     {totalPages > 1 && <nav className="archive-pagination" aria-label="페이지 탐색">
-      <div className="desktop-pagination">{Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => <Link className={page === initialPage ? "active" : ""} href={page === 1 ? basePath : `${basePath}?page=${page}`} key={page}>{page}</Link>)}</div>
+      <div className="desktop-pagination">{paginationItems(initialPage, totalPages).map((item, index) => typeof item === "string" ? <span className="pagination-ellipsis" key={`${item}-${index}`}>{item}</span> : <Link className={item === initialPage ? "active" : ""} href={item === 1 ? basePath : `${basePath}?page=${item}`} key={item}>{item}</Link>)}</div>
       {hasMore && <button type="button" className="mobile-more" onClick={loadMore} disabled={loading}>{loading ? "불러오는 중…" : "Show more · 더보기"}<span>↓</span></button>}
     </nav>}
   </>;
