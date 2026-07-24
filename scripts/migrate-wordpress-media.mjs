@@ -31,7 +31,8 @@ const xml = await readFile(process.env.WORDPRESS_EXPORT_PATH, "utf8");
 const attachmentUrls = [...xml.matchAll(/<wp:attachment_url><!\[CDATA\[(.*?)\]\]><\/wp:attachment_url>/g)]
   .map((match) => match[1]);
 const contentAssetUrls = [...xml.matchAll(/https?:\/\/kimsekyu\.com\/wp-content\/uploads\/[^\s"'<>\\]+/g)]
-  .map((match) => match[0].replaceAll("&amp;", "&"));
+  // The generic matcher also sees attachment URL CDATA and includes its closing ]].
+  .map((match) => match[0].replaceAll("&amp;", "&").replace(/\]\]+$/, ""));
 
 const uniqueUrls = [...new Set([...attachmentUrls, ...contentAssetUrls])]
   .filter((url) => url.startsWith("http://kimsekyu.com/wp-content/uploads/"));
@@ -73,6 +74,12 @@ const manifest = selectedUrls.map((sourceUrl) => {
     publicUrl: `${process.env.R2_PUBLIC_BASE_URL.replace(/\/$/, "")}/${key}`,
   };
 });
+
+// Remove failed checkpoint entries for malformed URLs that are no longer part of the manifest.
+const manifestSourceUrls = new Set(manifest.map((item) => item.sourceUrl));
+for (const sourceUrl of Object.keys(state.failed)) {
+  if (!manifestSourceUrls.has(sourceUrl)) delete state.failed[sourceUrl];
+}
 
 if (dryRun) {
   console.log(`Dry run: ${manifest.length} unique legacy attachment(s) found.`);
