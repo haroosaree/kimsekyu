@@ -11,7 +11,8 @@
     "migrate:media": "node --env-file=.env scripts/migrate-wordpress-media.mjs",
     "migrate:content": "node --env-file=.env --import tsx scripts/import-wordpress-content.ts",
     "migrate:finalize": "node --env-file=.env --import tsx scripts/finalize-legacy-taxonomy.ts",
-    "migrate:linebreaks": "node --env-file=.env --import tsx scripts/normalize-content-linebreaks.ts"
+    "migrate:linebreaks": "node --env-file=.env --import tsx scripts/normalize-content-linebreaks.ts",
+    "migrate:kboard-views": "node --env-file=.env --import tsx scripts/backfill-kboard-view-counts.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1093.0",
