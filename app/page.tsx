@@ -104,7 +104,7 @@ export default async function Home() {
       </section>
 
       <section className="contact-banner">
-        <div className="section-shell contact-content"><p className="eyebrow">LET&apos;S TALK</p><h2>오스틴에서의<br /><em>다음 장을 시작해 볼까요?</em></h2><figure className="contact-profile"><img src="https://pub-8ca6b7121e244bc5a6e95146a35297bf.r2.dev/legacy/wordpress/uploads/2017/02/%EA%B9%80%EC%84%B8%EA%B7%9C-%EC%82%AC%EC%A7%84.jpg" alt="김세규 REALTOR" /><figcaption><strong>김세규 · REALTOR® / Broker</strong><span>2005년부터 풀타임으로 일해 온 텍사스 어스틴의 김세규에게 연락 주세요.</span></figcaption></figure><div><a href="tel:+15129475599">512.947.5599</a><a href="mailto:kimsekyu@gmail.com">kimsekyu@gmail.com</a></div></div>
+        <div className="section-shell contact-content"><p className="eyebrow">LET&apos;S TALK</p><h2>오스틴에서의<br /><em>다음 장을 시작해 볼까요?</em></h2><div><a href="tel:+15129475599">512.947.5599</a><a href="mailto:kimsekyu@gmail.com">kimsekyu@gmail.com</a></div></div>
       </section>
 
       <footer className="site-footer section-shell"><div className="brand"><span className="brand-kicker">AUSTIN · TEXAS</span><span>김세규 부동산</span></div><p>Austin Grace Realty LLC<br />Austin, Round Rock & Central Texas</p><p>© {new Date().getFullYear()} Kim Sekyu Real Estate</p></footer>
