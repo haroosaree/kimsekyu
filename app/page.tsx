@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { getPayload } from "payload";
 import config from "@payload-config";
 
@@ -29,14 +30,26 @@ async function getLatestNews(): Promise<Article[]> {
   }
 }
 
+async function getHeroImageURL() {
+  try {
+    const payload = await getPayload({ config });
+    const settings = await payload.findGlobal({ slug: "site-settings", depth: 1, overrideAccess: true });
+    const heroImage = settings.heroImage as { url?: string } | null;
+    return typeof heroImage?.url === "string" ? heroImage.url : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 const formatDate = (value: string) => new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(new Date(value)).replace(",", "");
 
 export default async function Home() {
   const latestNews = await getLatestNews();
+  const heroImageURL = await getHeroImageURL();
 
   return (
     <main>
-      <section className="hero">
+      <section className="hero" style={heroImageURL ? ({ "--hero-image": `url("${heroImageURL}")` } as CSSProperties) : undefined}>
         <div className="hero-copy">
           <p className="eyebrow">AUSTIN GRACE REALTY LLC</p>
           <h1>집을 찾는 일,<br /><em>삶을 이해하는 일부터.</em></h1>

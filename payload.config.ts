@@ -104,6 +104,18 @@ export default buildConfig({
   ],
   globals: [
     {
+      slug: "site-settings",
+      label: "Site settings",
+      fields: [
+        {
+          name: "heroImage",
+          type: "upload",
+          relationTo: "media",
+          admin: { description: "Homepage hero background. The site gradient overlay remains applied automatically." },
+        },
+      ],
+    },
+    {
       slug: "navigation",
       fields: [
         {
