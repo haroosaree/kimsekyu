@@ -462,6 +462,10 @@ export interface SiteSetting {
    * Homepage hero background. The site gradient overlay remains applied automatically.
    */
   heroImage?: (number | null) | Media;
+  /**
+   * Shared legacy-style banner shown above menu landing pages.
+   */
+  menuHeroImage?: (number | null) | Media;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -580,6 +584,7 @@ export interface Homepage {
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
   heroImage?: T;
+  menuHeroImage?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

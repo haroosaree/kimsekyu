@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import QuestionForm from "./question-form";
+import MenuHero from "@/components/menu-hero";
 import { PAGE_SIZE, pageFrom } from "@/lib/news-archives";
 
 export const dynamic = "force-dynamic";
@@ -14,7 +15,7 @@ export default async function QuestionsPage({ searchParams }: { searchParams: Pr
   // details remain restricted to Payload administrators and never enter the page response.
   const questions = await payload.find({ collection: "questions", depth: 0, limit: PAGE_SIZE, page, sort: "-createdAt", overrideAccess: true, select: { subject: true, message: true, name: true, createdAt: true } });
 
-  return <main className="article-page">
+  return <><MenuHero /><main className="article-page">
     <nav className="breadcrumb" aria-label="현재 위치"><Link href="/">홈</Link><span>›</span><span>질문/답변</span></nav>
     <p className="eyebrow">QUESTIONS</p>
     <h1>질문/답변</h1>
@@ -30,5 +31,5 @@ export default async function QuestionsPage({ searchParams }: { searchParams: Pr
       </article>)}
     </section>
     {questions.totalPages > 1 && <nav className="question-pagination" aria-label="질문 페이지 탐색">{Array.from({ length: questions.totalPages }, (_, index) => index + 1).map((item) => <Link className={item === page ? "active" : ""} href={item === 1 ? "/news/questions" : `/news/questions?page=${item}`} key={item}>{item}</Link>)}</nav>}
-  </main>;
+  </main></>;
 }

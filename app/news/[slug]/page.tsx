@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import NewsArchiveList from "@/components/news-archive-list";
+import MenuHero from "@/components/menu-hero";
 import ArticleReadCount from "@/components/article-read-count";
 import { categoryArchives, formatUSDate, PAGE_SIZE, pageFrom } from "@/lib/news-archives";
 import { displayLegacyHTML, legacyThumbnailURL } from "@/lib/legacy-html";
@@ -26,12 +27,12 @@ export default async function NewsRoute({ params, searchParams }: { params: Prom
       overrideAccess: true,
     });
 
-    return <main className="archive-page">
+    return <><MenuHero /><main className="archive-page">
       <nav className="breadcrumb" aria-label="현재 위치"><Link href="/">홈</Link><span>›</span><span>{archive.title}</span></nav>
       <p className="eyebrow">AUSTIN INTELLIGENCE</p>
       <h1>{archive.title}</h1>
       <NewsArchiveList initialItems={news.docs.map((item) => ({ id: item.id, title: item.title as string, slug: item.slug, publishedAt: item.publishedAt, viewCount: item.viewCount ?? 0, thumbnailURL: legacyThumbnailURL(item.contentHTML as string) }))} initialPage={page} totalPages={news.totalPages} basePath={`/news/${slug}`} archive={slug} />
-    </main>;
+    </main></>;
   }
 
   const result = await payload.find({ collection: "news", where: { slug: { equals: slug } }, depth: 0, limit: 1, overrideAccess: true });

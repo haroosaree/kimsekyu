@@ -113,6 +113,12 @@ export default buildConfig({
           relationTo: "media",
           admin: { description: "Homepage hero background. The site gradient overlay remains applied automatically." },
         },
+        {
+          name: "menuHeroImage",
+          type: "upload",
+          relationTo: "media",
+          admin: { description: "Shared legacy-style banner shown above menu landing pages." },
+        },
       ],
     },
     {
