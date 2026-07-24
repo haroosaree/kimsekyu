@@ -6,6 +6,9 @@ const mediaCollectionPrefix = "site/general";
 const publicAssetBaseUrl = process.env.R2_PUBLIC_BASE_URL
   ?.replace(/\/$/, "")
   .replace(new RegExp(`/${mediaCollectionPrefix}(?:/${mediaCollectionPrefix})*$`), "");
+const serverURL = process.env.NEXT_PUBLIC_SERVER_URL
+  || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined)
+  || (process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://kimsekyu.com");
 const isAdmin = ({ req }: { req: { user?: unknown } }) => Boolean(req.user);
 
 export default buildConfig({
@@ -276,6 +279,6 @@ export default buildConfig({
     }),
   ],
   secret: process.env.PAYLOAD_SECRET || "",
-  serverURL: process.env.NEXT_PUBLIC_SERVER_URL || "https://kimsekyu.com",
+  serverURL,
   typescript: { outputFile: "payload-types.ts" },
 });
