@@ -8,7 +8,16 @@ const navigation = [
   { label: "매물검색", href: "http://austingrace.matrix.abor.com/Matrix/Public/?L=1&ap=SCH", external: true },
   { label: "부동산 정보", href: "/news/property-info" },
   { label: "어스틴 부동산", href: "/news/austin-real-estate" },
-  { label: "어스틴 경제/뉴스", href: "/news/austin-economy" },
+  {
+    label: "어스틴 경제/뉴스",
+    href: "/news/austin-economy",
+    children: [
+      { label: "어스틴 경제/비지니스 소식", href: "/news/austin-economy/business" },
+      { label: "오스틴 한인업소록", href: "/news/austin-economy/koreanbusiness" },
+      { label: "어스틴 관광명소", href: "/news/austin-economy/tours" },
+      { label: "어스틴 사진/풍경", href: "/news/austin-economy/gallery" },
+    ],
+  },
   { label: "교육/학군", href: "/school" },
   { label: "질문/답변", href: "/news/questions" },
   { label: "김세규 부동산 소개", href: "/agent" },
@@ -17,7 +26,7 @@ const navigation = [
 function MenuLinks({ className, onNavigate }: { className: string; onNavigate?: () => void }) {
   return <nav className={className} aria-label="주요 메뉴">{navigation.map((item) => item.external ? (
     <a key={item.label} href={item.href} target="_blank" rel="noreferrer" onClick={onNavigate}>{item.label}</a>
-  ) : <Link key={item.label} href={item.href} onClick={onNavigate}>{item.label}</Link>)}</nav>;
+  ) : <div className={item.children ? "nav-with-children" : undefined} key={item.label}><Link href={item.href} onClick={onNavigate}>{item.label}</Link>{item.children && <div className="nav-submenu">{item.children.map((child) => <Link href={child.href} key={child.label} onClick={onNavigate}>{child.label}</Link>)}</div>}</div>)}</nav>;
 }
 
 export default function SiteHeader() {

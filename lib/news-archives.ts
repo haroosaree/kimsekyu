@@ -15,8 +15,8 @@ export const categoryArchives = {
   "austin-economy": {
     title: "어스틴 경제/뉴스",
     categories: [
-      "legacy-board-7", "legacy-board-8", "legacy-board-9", "legacy-board-10", "legacy-board-14", "legacy-board-15",
-      "어스틴 경제 · 순위 · 고용", "어스틴 경제 · 비즈니스 뉴스", "어스틴 한인 비즈니스 · 기관", "여행 · 레저", "어스틴 한인 커뮤니티", "어스틴 생활 · 명소",
+      "legacy-board-8", "legacy-board-9", "legacy-board-10", "legacy-board-14",
+      "어스틴 경제 · 비즈니스 뉴스", "어스틴 한인 비즈니스 · 기관", "여행 · 레저", "어스틴 한인 커뮤니티",
     ],
   },
   questions: {
@@ -26,6 +26,13 @@ export const categoryArchives = {
 } as const;
 
 export type ArchiveSlug = keyof typeof categoryArchives;
+
+export const austinEconomySubmenus = {
+  business: { title: "어스틴 경제/비지니스 소식", categories: ["legacy-board-8", "어스틴 경제 · 비즈니스 뉴스"] },
+  koreanbusiness: { title: "오스틴 한인업소록", categories: ["legacy-board-9", "어스틴 한인 비즈니스 · 기관"] },
+  tours: { title: "어스틴 관광명소", categories: ["legacy-board-10", "여행 · 레저"] },
+  gallery: { title: "어스틴 사진/풍경", categories: ["legacy-board-14", "어스틴 한인 커뮤니티"] },
+} as const;
 export type NewsListItem = { id: string | number; title: string; slug: string; publishedAt: string; viewCount: number; thumbnailURL?: string };
 
 export function formatUSDate(value: string) {
