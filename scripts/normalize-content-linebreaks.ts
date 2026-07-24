@@ -1,12 +1,18 @@
 import { getPayload } from "payload";
 import config from "@payload-config";
 
-const normalizeLineBreaks = (html: string) => html.replace(/\r?\n+/g, "<br>").replace(/(<br\s*\/?>(?:\s|&nbsp;)*){2,}/gi, "<br>");
+const normalizeLineBreaks = (html: string) => html
+  .replace(/\r?\n+/g, "<br>")
+  .replace(/(<br\s*\/?>(?:\s|&nbsp;)*){2,}/gi, "<br>")
+  .replace(/<br\s*\/?>\s*(?=<(?:div|p|h[1-6]|ul|ol|li|table|thead|tbody|tr|blockquote|pre|figure)\b)/gi, "")
+  .replace(/(<\/(?:div|p|h[1-6]|ul|ol|li|table|thead|tbody|tr|blockquote|pre|figure)>)\s*<br\s*\/?>/gi, "$1");
+
+const needsNormalization = (html: string) => /\r?\n|(<br\s*\/?>(?:\s|&nbsp;)*){2,}|<br\s*\/?>\s*<(?:div|p|h[1-6]|ul|ol|li|table|thead|tbody|tr|blockquote|pre|figure)\b|<\/(?:div|p|h[1-6]|ul|ol|li|table|thead|tbody|tr|blockquote|pre|figure)>\s*<br\s*\/?>/i.test(html);
 
 async function normalizeCollection(collection: "pages" | "news") {
   const payload = await getPayload({ config });
   const result = await payload.find({ collection, limit: 5000, depth: 0, overrideAccess: true });
-  const records = result.docs.filter((record) => typeof record.contentHTML === "string" && (/\r?\n/.test(record.contentHTML) || /(<br\s*\/?>(?:\s|&nbsp;)*){2,}/i.test(record.contentHTML)));
+  const records = result.docs.filter((record) => typeof record.contentHTML === "string" && needsNormalization(record.contentHTML));
   let next = 0;
   let updated = 0;
 

@@ -29,7 +29,11 @@ const postType = (item: LegacyItem) => string(item["wp:post_type"]);
 const postStatus = (item: LegacyItem) => string(item["wp:status"]);
 const rewriteAssetUrls = (html: string) =>
   html.replaceAll("http://kimsekyu.com/wp-content/uploads/", `${publicAssetBaseUrl}/legacy/wordpress/uploads/`);
-const normalizeLineBreaks = (html: string) => html.replace(/\r?\n+/g, "<br>").replace(/(<br\s*\/?>(?:\s|&nbsp;)*){2,}/gi, "<br>");
+const normalizeLineBreaks = (html: string) => html
+  .replace(/\r?\n+/g, "<br>")
+  .replace(/(<br\s*\/?>(?:\s|&nbsp;)*){2,}/gi, "<br>")
+  .replace(/<br\s*\/?>\s*(?=<(?:div|p|h[1-6]|ul|ol|li|table|thead|tbody|tr|blockquote|pre|figure)\b)/gi, "")
+  .replace(/(<\/(?:div|p|h[1-6]|ul|ol|li|table|thead|tbody|tr|blockquote|pre|figure)>)\s*<br\s*\/?>/gi, "$1");
 const prepareHTML = (html: string) => normalizeLineBreaks(rewriteAssetUrls(html));
 const dateISO = (value: string) => new Date(`${value.replace(" ", "T")}Z`).toISOString();
 const safeSlug = (value: string, fallback: string) => value || fallback;
