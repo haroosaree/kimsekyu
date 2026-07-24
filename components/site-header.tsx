@@ -8,17 +8,17 @@ const navigation = [
   { label: "매물검색", href: "http://austingrace.matrix.abor.com/Matrix/Public/?L=1&ap=SCH", external: true },
   { label: "부동산 정보", href: "/news/property-info" },
   { label: "어스틴 부동산", href: "/news/austin-real-estate" },
+  { label: "어스틴 경제/뉴스", href: "/news/austin-economy" },
+  { label: "교육/학군", href: "/school" },
   {
-    label: "어스틴 경제/뉴스",
-    href: "/news/austin-economy",
+    label: "자료실",
+    href: "/resources",
     children: [
-      { label: "어스틴 경제/비지니스 소식", href: "/news/austin-economy/business" },
       { label: "오스틴 한인업소록", href: "/news/austin-economy/koreanbusiness" },
       { label: "어스틴 관광명소", href: "/news/austin-economy/tours" },
       { label: "어스틴 사진/풍경", href: "/news/austin-economy/gallery" },
     ],
   },
-  { label: "교육/학군", href: "/school" },
   { label: "질문/답변", href: "/news/questions" },
   { label: "김세규 부동산 소개", href: "/agent" },
 ];

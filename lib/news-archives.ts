@@ -15,8 +15,7 @@ export const categoryArchives = {
   "austin-economy": {
     title: "어스틴 경제/뉴스",
     categories: [
-      "legacy-board-8", "legacy-board-9", "legacy-board-10", "legacy-board-15",
-      "어스틴 경제 · 비즈니스 뉴스", "어스틴 한인 비즈니스 · 기관", "여행 · 레저", "어스틴 생활 · 명소",
+      "legacy-board-8", "어스틴 경제 · 비즈니스 뉴스",
     ],
   },
   questions: {
