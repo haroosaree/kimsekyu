@@ -5,6 +5,7 @@ import config from "@payload-config";
 import NewsArchiveList from "@/components/news-archive-list";
 import ArticleReadCount from "@/components/article-read-count";
 import { categoryArchives, formatUSDate, PAGE_SIZE, pageFrom } from "@/lib/news-archives";
+import { displayLegacyHTML } from "@/lib/legacy-html";
 
 export const dynamic = "force-dynamic";
 
@@ -39,5 +40,5 @@ export default async function NewsRoute({ params, searchParams }: { params: Prom
   const parentArchive = Object.entries(categoryArchives).find(([, value]) => value.categories.includes(article.category as never));
   const backHref = parentArchive ? `/news/${parentArchive[0]}` : "/news";
   const backLabel = parentArchive ? `← ${parentArchive[1].title}` : "← 지역 소식";
-  return <main className="article-page"><Link href={backHref} className="back-link">{backLabel}</Link><p className="eyebrow">{article.category}</p><h1>{article.title as string}</h1><div className="article-details"><time>{formatUSDate(article.publishedAt)}</time><ArticleReadCount id={article.id} initialCount={article.readCount ?? 0} /></div><article className="legacy-content" dangerouslySetInnerHTML={{ __html: article.contentHTML as string }} /></main>;
+  return <main className="article-page"><Link href={backHref} className="back-link">{backLabel}</Link><p className="eyebrow">{article.category}</p><h1>{article.title as string}</h1><div className="article-details"><time>{formatUSDate(article.publishedAt)}</time><ArticleReadCount id={article.id} initialCount={article.readCount ?? 0} /></div><article className="legacy-content" dangerouslySetInnerHTML={{ __html: displayLegacyHTML(article.contentHTML as string) }} /></main>;
 }
