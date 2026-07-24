@@ -7,11 +7,12 @@ import { legacyThumbnailURL } from "@/lib/legacy-html";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const archive = searchParams.get("archive") as ArchiveSlug | null;
+  const query = searchParams.get("q")?.trim().slice(0, 100);
   const page = pageFrom(searchParams.get("page") ?? undefined);
   const payload = await getPayload({ config });
   const result = await payload.find({
     collection: "news",
-    ...(archive && categoryArchives[archive] ? { where: { category: { in: [...categoryArchives[archive].categories] } } } : {}),
+    ...(query ? { where: { or: [{ title: { like: query } }, { contentHTML: { like: query } }] } } : archive && categoryArchives[archive] ? { where: { category: { in: [...categoryArchives[archive].categories] } } } : {}),
     depth: 0,
     limit: PAGE_SIZE,
     page,

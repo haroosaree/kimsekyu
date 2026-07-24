@@ -29,6 +29,14 @@ function MenuLinks({ className, onNavigate }: { className: string; onNavigate?: 
   ) : <div className={item.children ? "nav-with-children" : undefined} key={item.label}><Link href={item.href} onClick={onNavigate}>{item.label}</Link>{item.children && <div className="nav-submenu">{item.children.map((child) => <Link href={child.href} key={child.label} onClick={onNavigate}>{child.label}</Link>)}</div>}</div>)}</nav>;
 }
 
+function SiteSearch({ onNavigate }: { onNavigate?: () => void }) {
+  return <form className="site-search" action="/search" role="search" onSubmit={onNavigate}>
+    <label className="sr-only" htmlFor="site-search">사이트 검색</label>
+    <input id="site-search" name="q" type="search" placeholder="검색" minLength={2} required />
+    <button type="submit" aria-label="검색">⌕</button>
+  </form>;
+}
+
 export default function SiteHeader() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -37,10 +45,11 @@ export default function SiteHeader() {
     <header className="site-header">
       <Link href="/" className="brand" aria-label="김세규 부동산 홈"><span className="brand-kicker">AUSTIN · TEXAS</span><span>김세규 부동산</span></Link>
       <MenuLinks className="desktop-nav" />
+      <SiteSearch />
       <a className="header-contact" href="tel:+15129475599">512.947.5599</a>
       <button className="mobile-menu-toggle" type="button" aria-label="메뉴 열기" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}><span /><span /><span /></button>
     </header>
     {menuOpen && <button className="mobile-menu-backdrop" type="button" aria-label="메뉴 닫기" onClick={() => setMenuOpen(false)} />}
-    <MenuLinks className={`mobile-nav ${menuOpen ? "is-open" : ""}`} onNavigate={() => setMenuOpen(false)} />
+    <div className={`mobile-nav ${menuOpen ? "is-open" : ""}`}><SiteSearch onNavigate={() => setMenuOpen(false)} /><MenuLinks className="mobile-nav-links" onNavigate={() => setMenuOpen(false)} /></div>
   </>;
 }
