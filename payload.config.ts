@@ -113,6 +113,10 @@ export default buildConfig({
     {
       slug: "site-settings",
       label: "Site settings",
+      access: {
+        read: () => true,
+        update: isAdmin,
+      },
       fields: [
         {
           name: "heroImage",
@@ -146,6 +150,10 @@ export default buildConfig({
     {
       slug: "homepage",
       label: "Homepage",
+      access: {
+        read: () => true,
+        update: isAdmin,
+      },
       fields: [
         {
           type: "group",
