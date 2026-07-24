@@ -153,7 +153,7 @@ export default buildConfig({
     },
     {
       slug: "homepage",
-      label: "Homepage",
+      label: "Landing page",
       access: {
         read: () => true,
         update: isAdmin,
