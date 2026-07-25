@@ -1,10 +1,8 @@
 import type { NextConfig } from "next";
 import { withPayload } from "@payloadcms/next/withPayload";
 
-// const nextConfig: NextConfig = {};
 const nextConfig: NextConfig = {
-  serverExternalPackages: ['drizzle-kit'],
-  // ...your existing config (withPayload wrapper, etc.)
-}
+    serverExternalPackages: ['drizzle-kit', '@payloadcms/drizzle'],
+};
 
 export default withPayload(nextConfig);
