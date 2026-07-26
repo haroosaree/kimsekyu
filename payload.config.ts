@@ -93,6 +93,12 @@ export default buildConfig({
         { name: "name", type: "text", required: true },
         { name: "email", type: "email", required: true },
         { name: "phone", type: "text" },
+        { name: "publishedAt", type: "date", index: true },
+        { name: "viewCount", type: "number", required: true, defaultValue: 0, min: 0, admin: { readOnly: true } },
+        { name: "legacyId", type: "text", unique: true, index: true, admin: { readOnly: true } },
+        { name: "legacyUrl", type: "text", unique: true, index: true, admin: { readOnly: true } },
+        { name: "legacyContentHTML", type: "code", admin: { language: "html", readOnly: true } },
+        { name: "legacyAuthor", type: "text", admin: { readOnly: true } },
         {
           name: "status",
           type: "select",

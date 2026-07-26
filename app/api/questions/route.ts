@@ -15,6 +15,6 @@ export async function POST(request: Request) {
   }
 
   const payload = await getPayload({ config });
-  await payload.create({ collection: "questions", data: { subject, message, name, email, phone, status: "new" }, overrideAccess: true });
+  await payload.create({ collection: "questions", data: { subject, message, name, email, phone, publishedAt: new Date().toISOString(), viewCount: 0, status: "new" }, overrideAccess: true });
   return NextResponse.json({ ok: true }, { status: 201 });
 }

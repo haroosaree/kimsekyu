@@ -226,6 +226,12 @@ export interface Question {
   name: string;
   email: string;
   phone?: string | null;
+  publishedAt?: string | null;
+  viewCount: number;
+  legacyId?: string | null;
+  legacyUrl?: string | null;
+  legacyContentHTML?: string | null;
+  legacyAuthor?: string | null;
   status: 'new' | 'in-progress' | 'resolved';
   answer?: string | null;
   answeredAt?: string | null;
@@ -406,6 +412,12 @@ export interface QuestionsSelect<T extends boolean = true> {
   name?: T;
   email?: T;
   phone?: T;
+  publishedAt?: T;
+  viewCount?: T;
+  legacyId?: T;
+  legacyUrl?: T;
+  legacyContentHTML?: T;
+  legacyAuthor?: T;
   status?: T;
   answer?: T;
   answeredAt?: T;
