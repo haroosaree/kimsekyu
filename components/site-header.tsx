@@ -6,16 +6,16 @@ import { useState } from "react";
 
 const navigation = [
   { label: "매물검색", href: "http://austingrace.matrix.abor.com/Matrix/Public/?L=1&ap=SCH", external: true },
-  { label: "부동산 정보", href: "/news/property-info" },
-  { label: "어스틴 소식", href: "/news/austin-news" },
+  { label: "부동산 정보", href: "/property-info" },
+  { label: "어스틴 소식", href: "/austin-news" },
   {
     label: "자료실",
     href: "/resources",
     children: [
       { label: "교육/학군", href: "/school" },
-      { label: "오스틴 한인업소록", href: "/news/austin-economy/koreanbusiness" },
-      { label: "어스틴 관광명소", href: "/news/austin-economy/tours" },
-      { label: "어스틴 사진/풍경", href: "/news/austin-economy/gallery" },
+      { label: "오스틴 한인업소록", href: "/austin-economy/koreanbusiness" },
+      { label: "어스틴 관광명소", href: "/austin-economy/tours" },
+      { label: "어스틴 사진/풍경", href: "/austin-economy/gallery" },
     ],
   },
   { label: "질문/답변", href: "/questions" },
