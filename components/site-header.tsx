@@ -18,7 +18,7 @@ const navigation = [
       { label: "어스틴 사진/풍경", href: "/news/austin-economy/gallery" },
     ],
   },
-  { label: "질문/답변", href: "/news/questions" },
+  { label: "질문/답변", href: "/questions" },
   { label: "김세규 부동산 소개", href: "/agent" },
 ];
 
