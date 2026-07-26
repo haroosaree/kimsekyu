@@ -29,6 +29,8 @@ function plainText(html: string) {
     .replace(/&gt;/gi, ">")
     .replace(/\s*\n\s*/g, "\n")
     .replace(/[ \t]{2,}/g, " ")
+    // KBoard wraps some legacy bodies in a literal `n` before the first paragraph.
+    .replace(/^\s*n\s+/i, "")
     .trim();
 }
 
