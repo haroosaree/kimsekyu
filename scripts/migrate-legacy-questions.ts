@@ -99,7 +99,13 @@ async function main() {
     }
   }
 
-  console.log(`Migrated ${migrated} legacy Q&A records, removed ${removed} board-13 News records, and normalized ${normalized} legacy messages.`);
+  // Payload timestamps newly-created documents at import time. Restore the original
+  // KBoard publication date for migrated records without changing new submissions.
+  const restoredCreationDates = await payload.db.pool.query(
+    "UPDATE questions SET created_at = published_at WHERE legacy_id IS NOT NULL AND published_at IS NOT NULL AND created_at IS DISTINCT FROM published_at",
+  );
+
+  console.log(`Migrated ${migrated} legacy Q&A records, removed ${removed} board-13 News records, normalized ${normalized} legacy messages, and restored ${restoredCreationDates.rowCount ?? 0} creation dates.`);
 }
 
 main().catch((error) => {
