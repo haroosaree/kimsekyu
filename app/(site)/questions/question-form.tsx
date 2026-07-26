@@ -11,7 +11,7 @@ export default function QuestionForm() {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setState("sending");
-    const response = await fetch("/api/questions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(values) });
+    const response = await fetch("/api/question-submissions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(values) });
     if (response.ok) {
       setValues(initialValues);
       setState("sent");

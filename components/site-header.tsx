@@ -23,9 +23,15 @@ const navigation = [
 ];
 
 function MenuLinks({ className, onNavigate }: { className: string; onNavigate?: () => void }) {
+  const [expandedItem, setExpandedItem] = useState<string | null>(null);
+  const isMobile = className === "mobile-nav-links";
+
   return <nav className={className} aria-label="주요 메뉴">{navigation.map((item) => item.external ? (
     <a key={item.label} href={item.href} target="_blank" rel="noreferrer" onClick={onNavigate}>{item.label}</a>
-  ) : <div className={item.children ? "nav-with-children" : undefined} key={item.label}><Link href={item.href} onClick={onNavigate}>{item.label}</Link>{item.children && <div className="nav-submenu">{item.children.map((child) => <Link href={child.href} key={child.label} onClick={onNavigate}>{child.label}</Link>)}</div>}</div>)}</nav>;
+  ) : item.children && isMobile ? <div className={`mobile-nav-item ${expandedItem === item.label ? "is-expanded" : ""}`} key={item.label}>
+    <div className="mobile-nav-primary"><Link href={item.href} onClick={onNavigate}>{item.label}</Link><button type="button" aria-label={`${item.label} 하위 메뉴 ${expandedItem === item.label ? "닫기" : "열기"}`} aria-expanded={expandedItem === item.label} onClick={() => setExpandedItem((current) => current === item.label ? null : item.label)}>⌄</button></div>
+    <div className="mobile-nav-submenu">{item.children.map((child) => <Link href={child.href} key={child.label} onClick={onNavigate}>{child.label}</Link>)}</div>
+  </div> : <div className={item.children ? "nav-with-children" : undefined} key={item.label}><Link href={item.href} onClick={onNavigate}>{item.label}</Link>{item.children && <div className="nav-submenu">{item.children.map((child) => <Link href={child.href} key={child.label} onClick={onNavigate}>{child.label}</Link>)}</div>}</div>)}</nav>;
 }
 
 function SiteSearch({ onNavigate }: { onNavigate?: () => void }) {
