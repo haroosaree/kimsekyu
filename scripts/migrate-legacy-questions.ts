@@ -3,10 +3,26 @@ import config from "../payload.config";
 
 const legacyBoardID = "13";
 
+function decodeEntity(entity: string) {
+  const value = entity.startsWith("#x") || entity.startsWith("#X")
+    ? Number.parseInt(entity.slice(2), 16)
+    : entity.startsWith("#")
+      ? Number.parseInt(entity.slice(1), 10)
+      : undefined;
+
+  if (value === undefined || !Number.isFinite(value)) return `&${entity};`;
+  try {
+    return String.fromCodePoint(value);
+  } catch {
+    return `&${entity};`;
+  }
+}
+
 function plainText(html: string) {
   return html
     .replace(/<br\s*\/?>/gi, "\n")
     .replace(/<[^>]+>/g, " ")
+    .replace(/&(#x[\da-f]+|#\d+);/gi, (_, entity: string) => decodeEntity(entity))
     .replace(/&nbsp;/gi, " ")
     .replace(/&amp;/gi, "&")
     .replace(/&lt;/gi, "<")
@@ -28,6 +44,7 @@ async function main() {
 
   let migrated = 0;
   let removed = 0;
+  let normalized = 0;
 
   for (const legacyQuestion of legacyQuestions.docs) {
     const existing = await payload.find({
@@ -66,12 +83,21 @@ async function main() {
 
   const currentQuestions = await payload.find({ collection: "questions", limit: 500, depth: 0, overrideAccess: true });
   for (const question of currentQuestions.docs) {
-    if (!question.publishedAt) {
-      await payload.update({ collection: "questions", id: question.id, data: { publishedAt: question.createdAt }, overrideAccess: true });
+    const data: Record<string, string> = {};
+    if (!question.publishedAt) data.publishedAt = question.createdAt;
+    if (question.legacyContentHTML) {
+      const message = plainText(String(question.legacyContentHTML));
+      if (message && message !== question.message) {
+        data.message = message;
+        normalized += 1;
+      }
+    }
+    if (Object.keys(data).length > 0) {
+      await payload.update({ collection: "questions", id: question.id, data, overrideAccess: true });
     }
   }
 
-  console.log(`Migrated ${migrated} legacy Q&A records and removed ${removed} board-13 News records.`);
+  console.log(`Migrated ${migrated} legacy Q&A records, removed ${removed} board-13 News records, and normalized ${normalized} legacy messages.`);
 }
 
 main().catch((error) => {

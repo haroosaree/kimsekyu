@@ -97,7 +97,7 @@ export default buildConfig({
         { name: "viewCount", type: "number", required: true, defaultValue: 0, min: 0, admin: { readOnly: true } },
         { name: "legacyId", type: "text", unique: true, index: true, admin: { readOnly: true } },
         { name: "legacyUrl", type: "text", unique: true, index: true, admin: { readOnly: true } },
-        { name: "legacyContentHTML", type: "code", admin: { language: "html", readOnly: true } },
+        { name: "legacyContentHTML", type: "code", admin: { language: "html", readOnly: true, hidden: true } },
         { name: "legacyAuthor", type: "text", admin: { readOnly: true } },
         {
           name: "status",
