@@ -13,7 +13,7 @@ export default async function QuestionsPage({ searchParams }: { searchParams: Pr
   const payload = await getPayload({ config });
   // This server-side query intentionally selects only public-safe fields. Answers and contact
   // details remain restricted to Payload administrators and never enter the page response.
-  const questions = await payload.find({ collection: "questions", depth: 0, limit: PAGE_SIZE, page, sort: "-publishedAt", overrideAccess: true, select: { subject: true, message: true, name: true, createdAt: true, publishedAt: true, viewCount: true } });
+  const questions = await payload.find({ collection: "questions", where: { subject: { not_like: "Re:%" } }, depth: 0, limit: PAGE_SIZE, page, sort: "-publishedAt", overrideAccess: true, select: { subject: true, message: true, name: true, createdAt: true, publishedAt: true, viewCount: true } });
 
   return <><MenuHero /><main className="article-page">
     <nav className="breadcrumb" aria-label="현재 위치"><Link href="/">홈</Link><span>›</span><span>질문/답변</span></nav>
