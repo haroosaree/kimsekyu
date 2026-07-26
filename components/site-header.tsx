@@ -11,11 +11,12 @@ const navigation = [
   {
     label: "자료실",
     href: "/resources",
+    clickable: false,
     children: [
-      { label: "교육/학군", href: "/school" },
-      { label: "오스틴 한인업소록", href: "/austin-economy/koreanbusiness" },
-      { label: "어스틴 관광명소", href: "/austin-economy/tours" },
-      { label: "어스틴 사진/풍경", href: "/austin-economy/gallery" },
+      { label: "교육/학군", href: "/resources/school" },
+      { label: "어스틴 한인업소록", href: "/resources/koreanbusiness" },
+      { label: "어스틴 관광명소", href: "/resources/tours" },
+      { label: "어스틴 사진/풍경", href: "/resources/gallery" },
     ],
   },
   { label: "질문/답변", href: "/questions" },
@@ -29,9 +30,9 @@ function MenuLinks({ className, onNavigate }: { className: string; onNavigate?: 
   return <nav className={className} aria-label="주요 메뉴">{navigation.map((item) => item.external ? (
     <a key={item.label} href={item.href} target="_blank" rel="noreferrer" onClick={onNavigate}>{item.label}</a>
   ) : item.children && isMobile ? <div className={`mobile-nav-item ${expandedItem === item.label ? "is-expanded" : ""}`} key={item.label}>
-    <div className="mobile-nav-primary"><Link href={item.href} onClick={onNavigate}>{item.label}</Link><button type="button" aria-label={`${item.label} 하위 메뉴 ${expandedItem === item.label ? "닫기" : "열기"}`} aria-expanded={expandedItem === item.label} onClick={() => setExpandedItem((current) => current === item.label ? null : item.label)}>⌄</button></div>
+    <div className="mobile-nav-primary">{item.clickable === false ? <button className="mobile-nav-label" type="button" aria-expanded={expandedItem === item.label} onClick={() => setExpandedItem((current) => current === item.label ? null : item.label)}>{item.label}</button> : <Link href={item.href} onClick={onNavigate}>{item.label}</Link>}<button type="button" aria-label={`${item.label} 하위 메뉴 ${expandedItem === item.label ? "닫기" : "열기"}`} aria-expanded={expandedItem === item.label} onClick={() => setExpandedItem((current) => current === item.label ? null : item.label)}>⌄</button></div>
     <div className="mobile-nav-submenu">{item.children.map((child) => <Link href={child.href} key={child.label} onClick={onNavigate}>{child.label}</Link>)}</div>
-  </div> : <div className={item.children ? "nav-with-children" : undefined} key={item.label}><Link href={item.href} onClick={onNavigate}>{item.label}</Link>{item.children && <div className="nav-submenu">{item.children.map((child) => <Link href={child.href} key={child.label} onClick={onNavigate}>{child.label}</Link>)}</div>}</div>)}</nav>;
+  </div> : <div className={item.children ? "nav-with-children" : undefined} key={item.label}>{item.clickable === false ? <span className="nav-parent-label">{item.label}</span> : <Link href={item.href} onClick={onNavigate}>{item.label}</Link>}{item.children && <div className="nav-submenu">{item.children.map((child) => <Link href={child.href} key={child.label} onClick={onNavigate}>{child.label}</Link>)}</div>}</div>)}</nav>;
 }
 
 function SiteSearch({ onNavigate }: { onNavigate?: () => void }) {

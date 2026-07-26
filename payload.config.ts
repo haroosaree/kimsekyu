@@ -62,6 +62,7 @@ export default buildConfig({
     },
     {
       slug: "news",
+      defaultSort: "-publishedAt",
       admin: { useAsTitle: "title", defaultColumns: ["title", "category", "publishedAt"] },
       fields: [
         { name: "title", type: "text", required: true, localized: true },

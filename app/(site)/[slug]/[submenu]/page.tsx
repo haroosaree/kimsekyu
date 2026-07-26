@@ -5,17 +5,25 @@ import config from "@payload-config";
 import NewsArchiveList from "@/components/news-archive-list";
 import MenuHero from "@/components/menu-hero";
 import { austinEconomySubmenus, PAGE_SIZE, pageFrom } from "@/lib/news-archives";
-import { legacyThumbnailURL } from "@/lib/legacy-html";
+import { displayLegacyHTML, legacyThumbnailURL } from "@/lib/legacy-html";
 
 export const dynamic = "force-dynamic";
 
 export default async function ArchiveSubmenu({ params, searchParams }: { params: Promise<{ slug: string; submenu: string }>; searchParams: Promise<{ page?: string }> }) {
   const { slug, submenu } = await params;
   const page = pageFrom((await searchParams).page);
-  const archive = slug === "austin-economy" ? austinEconomySubmenus[submenu as keyof typeof austinEconomySubmenus] : undefined;
-  if (!archive) notFound();
-  const isResource = submenu !== "business";
+  const isResource = slug === "resources";
   const payload = await getPayload({ config });
+
+  if (isResource && submenu === "school") {
+    const result = await payload.find({ collection: "pages", where: { slug: { equals: "school" } }, depth: 0, limit: 1, overrideAccess: true });
+    const school = result.docs[0];
+    if (!school) notFound();
+    return <><MenuHero /><main className="article-page"><nav className="breadcrumb" aria-label="현재 위치"><Link href="/">홈</Link><span>›</span><Link href="/resources">자료실</Link><span>›</span><span>교육/학군</span></nav><p className="eyebrow">RESOURCES</p><h1>{school.title as string}</h1><article className="legacy-content" dangerouslySetInnerHTML={{ __html: displayLegacyHTML(school.contentHTML as string) }} /></main></>;
+  }
+
+  const archive = slug === "austin-economy" || isResource ? austinEconomySubmenus[submenu as keyof typeof austinEconomySubmenus] : undefined;
+  if (!archive) notFound();
   const news = await payload.find({ collection: "news", where: { category: { in: [...archive.categories] } }, depth: 0, limit: PAGE_SIZE, page, sort: "-publishedAt", overrideAccess: true });
 
   return <><MenuHero /><main className="archive-page">

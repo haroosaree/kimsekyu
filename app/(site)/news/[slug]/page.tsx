@@ -5,7 +5,7 @@ import config from "@payload-config";
 import NewsArchiveList from "@/components/news-archive-list";
 import MenuHero from "@/components/menu-hero";
 import ArticleReadCount from "@/components/article-read-count";
-import { categoryArchives, formatUSDate, PAGE_SIZE, pageFrom } from "@/lib/news-archives";
+import { austinEconomySubmenus, categoryArchives, formatUSDate, PAGE_SIZE, pageFrom } from "@/lib/news-archives";
 import { displayLegacyHTML, legacyThumbnailURL } from "@/lib/legacy-html";
 
 export const dynamic = "force-dynamic";
@@ -38,8 +38,13 @@ export default async function NewsRoute({ params, searchParams }: { params: Prom
   const result = await payload.find({ collection: "news", where: { slug: { equals: slug } }, depth: 0, limit: 1, overrideAccess: true });
   const article = result.docs[0];
   if (!article) notFound();
-  const parentArchive = Object.entries(categoryArchives).find(([, value]) => value.categories.includes(article.category as never));
-  const backHref = parentArchive ? `/news/${parentArchive[0]}` : "/news";
-  const backLabel = parentArchive ? `← ${parentArchive[1].title}` : "← 지역 소식";
+  // Austin real-estate and economy articles are intentionally merged into the
+  // single public “어스틴 소식” menu, even though their legacy categories remain.
+  const resourceArchive = Object.entries(austinEconomySubmenus).find(([key, value]) => key !== "business" && value.categories.includes(article.category as never));
+  const parentArchive = categoryArchives["austin-news"].categories.includes(article.category as never)
+    ? (["austin-news", categoryArchives["austin-news"]] as const)
+    : Object.entries(categoryArchives).find(([key, value]) => key !== "austin-real-estate" && key !== "austin-economy" && value.categories.includes(article.category as never));
+  const backHref = resourceArchive ? `/resources/${resourceArchive[0]}` : parentArchive ? `/${parentArchive[0]}` : "/austin-news";
+  const backLabel = resourceArchive ? `← ${resourceArchive[1].title}` : parentArchive ? `← ${parentArchive[1].title}` : "← 어스틴 소식";
   return <main className="article-page"><Link href={backHref} className="back-link">{backLabel}</Link><p className="eyebrow">{article.category}</p><h1>{article.title as string}</h1><div className="article-details"><time>{formatUSDate(article.publishedAt)}</time><ArticleReadCount id={article.id} initialCount={article.viewCount ?? 0} /></div><article className="legacy-content" dangerouslySetInnerHTML={{ __html: displayLegacyHTML(article.contentHTML as string) }} /></main>;
 }
