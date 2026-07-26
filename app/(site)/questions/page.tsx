@@ -7,6 +7,13 @@ import { PAGE_SIZE, pageFrom } from "@/lib/news-archives";
 
 export const dynamic = "force-dynamic";
 
+function paginationItems(currentPage: number, totalPages: number) {
+  const pages = new Set([1, totalPages]);
+  for (let item = Math.max(1, currentPage - 2); item <= Math.min(totalPages, currentPage + 2); item += 1) pages.add(item);
+  const sorted = [...pages].sort((left, right) => left - right);
+  return sorted.flatMap((item, index) => index > 0 && item - sorted[index - 1] > 1 ? (["…", item] as const) : ([item] as const));
+}
+
 export default async function QuestionsPage({ searchParams }: { searchParams: Promise<{ ask?: string; page?: string }> }) {
   const { ask, page: pageParam } = await searchParams;
   const page = pageFrom(pageParam);
@@ -30,6 +37,10 @@ export default async function QuestionsPage({ searchParams }: { searchParams: Pr
         <div className="question-private-answer">답변은 관리자만 확인할 수 있습니다.</div>
       </article>)}
     </section>
-    {questions.totalPages > 1 && <nav className="question-pagination" aria-label="질문 페이지 탐색">{Array.from({ length: questions.totalPages }, (_, index) => index + 1).map((item) => <Link className={item === page ? "active" : ""} href={item === 1 ? "/questions" : `/questions?page=${item}`} key={item}>{item}</Link>)}</nav>}
+    {questions.totalPages > 1 && <nav className="question-pagination" aria-label="질문 페이지 탐색">
+      {page > 1 ? <Link className="pagination-arrow" href={page === 2 ? "/questions" : `/questions?page=${page - 1}`} aria-label="Previous page">‹</Link> : <span className="pagination-arrow disabled" aria-hidden="true">‹</span>}
+      {paginationItems(page, questions.totalPages).map((item, index) => typeof item === "string" ? <span className="pagination-ellipsis" key={`${item}-${index}`}>{item}</span> : <Link className={item === page ? "active" : ""} href={item === 1 ? "/questions" : `/questions?page=${item}`} key={item}>{item}</Link>)}
+      {page < questions.totalPages ? <Link className="pagination-arrow" href={`/questions?page=${page + 1}`} aria-label="Next page">›</Link> : <span className="pagination-arrow disabled" aria-hidden="true">›</span>}
+    </nav>}
   </main></>;
 }
