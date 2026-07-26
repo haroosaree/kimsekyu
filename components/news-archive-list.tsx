@@ -31,7 +31,7 @@ export default function NewsArchiveList({ initialItems, initialPage, totalPages,
     const params = new URLSearchParams({ page: String(nextPage) });
     if (archive) params.set("archive", archive);
     if (searchQuery) params.set("q", searchQuery);
-    const response = await fetch(`/api/news?${params}`);
+    const response = await fetch(`/api/news-list?${params}`);
     if (response.ok) {
       const data = await response.json();
       setItems((current) => [...current, ...data.docs]);
