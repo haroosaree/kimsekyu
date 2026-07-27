@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import NewsArchiveList from "@/components/news-archive-list";
@@ -6,6 +7,7 @@ import { PAGE_SIZE, pageFrom } from "@/lib/news-archives";
 import { legacyThumbnailURL } from "@/lib/legacy-html";
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = { title: "검색", robots: { index: false, follow: true } };
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string; page?: string }> }) {
   const { q: rawQuery = "", page: rawPage } = await searchParams;

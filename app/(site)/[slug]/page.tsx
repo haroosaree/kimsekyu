@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import { notFound, permanentRedirect } from "next/navigation";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import { displayLegacyHTML } from "@/lib/legacy-html";
@@ -9,6 +10,17 @@ import { categoryArchives, PAGE_SIZE, pageFrom } from "@/lib/news-archives";
 import { legacyThumbnailURL } from "@/lib/legacy-html";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  if (slug === "school") permanentRedirect("/resources/school");
+  const archive = categoryArchives[slug as keyof typeof categoryArchives];
+  if (archive) return { title: archive.title, description: `${archive.title} 관련 어스틴과 센트럴 텍사스의 최신 정보입니다.`, alternates: { canonical: `/${slug}` } };
+  const payload = await getPayload({ config });
+  const result = await payload.find({ collection: "pages", where: { slug: { equals: slug } }, depth: 0, limit: 1, overrideAccess: true, select: { title: true, seoDescription: true } });
+  const page = result.docs[0];
+  return page ? { title: page.title as string, description: page.seoDescription as string | undefined, alternates: { canonical: `/${slug}` } } : {};
+}
 
 export default async function Page({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ page?: string }> }) {
   const { slug } = await params;

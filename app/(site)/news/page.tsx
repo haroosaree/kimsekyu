@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { permanentRedirect } from "next/navigation";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import NewsArchiveList from "@/components/news-archive-list";
@@ -9,6 +10,7 @@ import { legacyThumbnailURL } from "@/lib/legacy-html";
 export const dynamic = "force-dynamic";
 
 export default async function NewsIndex({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+  permanentRedirect("/austin-news");
   const page = pageFrom((await searchParams).page);
   const payload = await getPayload({ config });
   const news = await payload.find({ collection: "news", depth: 0, limit: PAGE_SIZE, page, sort: "-publishedAt", overrideAccess: true });

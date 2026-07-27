@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import NewsArchiveList from "@/components/news-archive-list";
@@ -11,6 +12,7 @@ export const dynamic = "force-dynamic";
 
 export default async function NewsSubmenu({ params, searchParams }: { params: Promise<{ slug: string; submenu: string }>; searchParams: Promise<{ page?: string }> }) {
   const { slug, submenu } = await params;
+  if (slug === "austin-economy") permanentRedirect(submenu === "business" ? "/austin-news" : `/resources/${submenu}`);
   const page = pageFrom((await searchParams).page);
   const archive = slug === "austin-economy" ? austinEconomySubmenus[submenu as keyof typeof austinEconomySubmenus] : undefined;
   if (!archive) notFound();

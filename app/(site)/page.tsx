@@ -21,13 +21,13 @@ const defaults = {
   },
   services: {
     eyebrow: "HOW WE HELP", cards: [
-      { title: "주택 매매", description: "단독주택, 콘도, 타운홈. 생활 방식에 맞는 선택을 함께 정리합니다.", linkLabel: "시장 정보 보기", linkHref: "/news/austin-real-estate" },
-      { title: "상업용 부동산", description: "상가, 오피스, 토지와 아파트까지. 더 큰 계획을 위한 든든한 파트너가 됩니다.", linkLabel: "부동산 정보 보기", linkHref: "/news/property-info" },
+      { title: "주택 매매", description: "단독주택, 콘도, 타운홈. 생활 방식에 맞는 선택을 함께 정리합니다.", linkLabel: "시장 정보 보기", linkHref: "/austin-news" },
+      { title: "상업용 부동산", description: "상가, 오피스, 토지와 아파트까지. 더 큰 계획을 위한 든든한 파트너가 됩니다.", linkLabel: "부동산 정보 보기", linkHref: "/property-info" },
       { title: "정착 & 학군", description: "학교와 생활권, 지역 소식까지. 어스틴에서의 새로운 시작을 설계합니다.", linkLabel: "교육·학군 보기", linkHref: "/resources/school" },
     ],
   },
   newsSection: {
-    eyebrow: "FROM AUSTIN", heading: "새로운 지역 소식", allLinkLabel: "모든 소식 보기", allLinkHref: "/news", readLabel: "조회", articleLinkLabel: "Read story", emptyStateLabel: "Migration in progress",
+    eyebrow: "FROM AUSTIN", heading: "새로운 지역 소식", allLinkLabel: "모든 소식 보기", allLinkHref: "/austin-news", readLabel: "조회", articleLinkLabel: "Read story", emptyStateLabel: "Migration in progress",
     emptyCardTitles: ["어스틴의 시장을 읽는 새로운 방법", "센트럴 텍사스, 다음 성장의 중심", "좋은 동네를 고르는 기준"],
   },
   contact: {
@@ -73,8 +73,10 @@ export default async function Home() {
   const serviceCards = choose(services.cards as Item[] | undefined, defaults.services.cards);
   const emptyCardTitles = choose((newsSection.emptyCardTitles as Item[] | undefined)?.map((item) => item.title ? item : ({ title: item } as Item)), defaults.newsSection.emptyCardTitles.map((title) => ({ title })));
   const contactImageURL = typeof contact.profileImage === "string" ? contact.profileImage : (contact.profileImage as Media)?.url || defaults.contact.profileImage;
+  const businessSchema = { "@context": "https://schema.org", "@type": "RealEstateAgent", name: "김세규 부동산", url: "https://kimsekyu.com", telephone: contact.phone, email: contact.email, image: contactImageURL, areaServed: ["Austin", "Round Rock", "Central Texas"], address: { "@type": "PostalAddress", addressLocality: "Austin", addressRegion: "TX", addressCountry: "US" } };
 
   return <main>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(businessSchema).replace(/</g, "\\u003c") }} />
     <section className="hero" style={heroImageURL ? ({ "--hero-image": `url("${heroImageURL}")` } as CSSProperties) : undefined}>
       <div className="hero-copy"><p className="eyebrow">{hero.eyebrow}</p><h1>{lines(hero.heading)}<br /><em>{hero.emphasis}</em></h1><p className="hero-description">{hero.description}</p><div className="hero-actions"><a className="button button-primary" href={hero.primaryHref} target={hero.primaryHref.startsWith("http") ? "_blank" : undefined} rel={hero.primaryHref.startsWith("http") ? "noreferrer" : undefined}>{hero.primaryLabel} <span>↗</span></a><a className="button button-secondary" href={hero.secondaryHref}>{hero.secondaryLabel}</a></div></div>
       <div className="hero-side-note"><span>01</span>{lines(hero.sideNote)}</div>
