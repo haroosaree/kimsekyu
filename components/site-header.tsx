@@ -19,7 +19,7 @@ const navigation = [
       { label: "어스틴 사진/풍경", href: "/resources/gallery" },
     ],
   },
-  { label: "질문/답변", href: "/questions" },
+  { label: "문의하기", href: "/contact" },
   { label: "김세규 부동산 소개", href: "/agent" },
 ];
 

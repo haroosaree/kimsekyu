@@ -13,7 +13,7 @@ type Media = { url?: string } | null | undefined;
 const defaults = {
   hero: {
     eyebrow: "AUSTIN GRACE REALTY LLC", heading: "집을 찾는 일,", emphasis: "삶을 이해하는 일부터.", description: "어스틴과 센트럴 텍사스에서 20년의 경험으로, 당신의 다음 주소를 함께 찾습니다.",
-    primaryLabel: "매물 검색하기", primaryHref: "http://austingrace.matrix.abor.com/Matrix/Public/?L=1&ap=SCH", secondaryLabel: "상담 문의하기", secondaryHref: "mailto:kimsekyu@gmail.com", sideNote: "A considered approach\nto Austin real estate.",
+    primaryLabel: "매물 검색하기", primaryHref: "http://austingrace.matrix.abor.com/Matrix/Public/?L=1&ap=SCH", secondaryLabel: "상담 문의하기", secondaryHref: "/contact", sideNote: "A considered approach\nto Austin real estate.",
   },
   introduction: {
     eyebrow: "LOCAL KNOWLEDGE, LASTING GUIDANCE", heading: "어스틴의 변화와\n당신의 기준을", emphasis: "모두 읽습니다.", description: "김세규 부동산은 주거용·상업용 매매와 임대, 부동산 관리까지 폭넓게 돕습니다. 시장의 숫자만이 아니라, 동네의 리듬과 가족의 다음 장까지 살펴봅니다.", linkLabel: "김세규 부동산 소개", linkHref: "/agent",

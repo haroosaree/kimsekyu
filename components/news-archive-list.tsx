@@ -10,6 +10,7 @@ type Props = {
   totalPages: number;
   basePath: string;
   archive?: string;
+  hideMeta?: boolean;
   searchQuery?: string;
 };
 
@@ -20,7 +21,7 @@ function paginationItems(currentPage: number, totalPages: number) {
   return sorted.flatMap((page, index) => index > 0 && page - sorted[index - 1] > 1 ? (["…", page] as const) : ([page] as const));
 }
 
-export default function NewsArchiveList({ initialItems, initialPage, totalPages, basePath, archive, searchQuery }: Props) {
+export default function NewsArchiveList({ initialItems, initialPage, totalPages, basePath, archive, hideMeta = false, searchQuery }: Props) {
   const [items, setItems] = useState(initialItems);
   const [nextPage, setNextPage] = useState(initialPage + 1);
   const [loading, setLoading] = useState(false);
@@ -50,7 +51,7 @@ export default function NewsArchiveList({ initialItems, initialPage, totalPages,
 
   return <>
     <div className="archive-list">{items.map((item) => <Link href={`/news/${item.slug}`} key={item.id}>
-      <div className="archive-thumbnail">{item.thumbnailURL && <img src={item.thumbnailURL} alt="" />}</div><h2>{item.title}</h2><div className="article-meta"><time>{formatUSDate(item.publishedAt)}</time><small>조회 {item.viewCount.toLocaleString("en-US")}</small></div><b>↗</b>
+      <div className="archive-thumbnail">{item.thumbnailURL && <img src={item.thumbnailURL} alt="" />}</div><h2>{item.title}</h2>{!hideMeta && <div className="article-meta"><time>{formatUSDate(item.publishedAt)}</time><small>조회 {item.viewCount.toLocaleString("en-US")}</small></div>}<b>↗</b>
     </Link>)}</div>
     {totalPages > 1 && <nav className="archive-pagination" aria-label="페이지 탐색">
       <div className="desktop-pagination">
