@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatUSDate, type NewsListItem } from "@/lib/news-archives";
 
 type Props = {
@@ -26,6 +26,11 @@ export default function NewsArchiveList({ initialItems, initialPage, totalPages,
   const [nextPage, setNextPage] = useState(initialPage + 1);
   const [loading, setLoading] = useState(false);
   const hasMore = nextPage <= totalPages;
+
+  useEffect(() => {
+    setItems(initialItems);
+    setNextPage(initialPage + 1);
+  }, [initialItems, initialPage]);
 
   async function loadMore() {
     setLoading(true);
