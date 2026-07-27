@@ -49,7 +49,7 @@ export default function SiteHeader() {
   if (pathname.startsWith("/admin") || pathname.startsWith("/api")) return null;
   return <>
     <header className="site-header">
-      <Link href="/" className="brand" aria-label="김세규 부동산 홈"><img className="brand-photo" src="https://pub-8ca6b7121e244bc5a6e95146a35297bf.r2.dev/site/general/kim-sekyu-profile.jpg" alt="김세규" /><span className="brand-text"><span className="brand-kicker">AUSTIN · TEXAS</span><span>김세규 부동산</span></span></Link>
+      <Link href="/" className="brand" aria-label="김세규 부동산 홈"><img className="brand-photo" src="https://pub-8ca6b7121e244bc5a6e95146a35297bf.r2.dev/site/general/kim-sekyu-profile.jpg" alt="김세규" /><span className="brand-text"><span className="brand-kicker">AUSTIN · TEXAS</span><span>김세규 부동산</span><small>열정·믿음·긍정</small></span></Link>
       <MenuLinks className="desktop-nav" />
       <SiteSearch />
       <a className="header-contact" href="tel:+15129475599">512.947.5599</a>

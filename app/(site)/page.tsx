@@ -90,6 +90,6 @@ export default async function Home() {
 
     <section className="contact-banner"><div className="section-shell contact-content"><figure className="contact-agent"><img src={contactImageURL} alt={contact.profileName} /><figcaption><strong>{contact.profileName}</strong><span>{contact.profileCaption}</span></figcaption></figure><div className="contact-copy"><p className="eyebrow">{contact.eyebrow}</p><h2>{lines(contact.heading)}{contact.emphasis && <><br /><em>{contact.emphasis}</em></>}</h2><p className="contact-intro">{lines(contact.introduction)}</p><div className="contact-details"><a href={`tel:${contact.phone.replaceAll(".", "")}`}>{contact.phone}</a><a href={`mailto:${contact.email}`}>{contact.email}</a></div></div></div></section>
 
-    <footer className="site-footer section-shell"><div className="brand"><span className="brand-kicker">{footer.kicker}</span><span>{footer.brand}</span></div><p>{lines(footer.company)}</p><p>{footer.copyright.replace("{year}", String(new Date().getFullYear()))}</p></footer>
+    <footer className="site-footer section-shell"><div className="brand"><span className="brand-kicker">{footer.kicker}</span><span>{footer.brand}</span><small>열정·믿음·긍정</small></div><p>{lines(footer.company)}</p><p>{footer.copyright.replace("{year}", String(new Date().getFullYear()))}</p></footer>
   </main>;
 }
