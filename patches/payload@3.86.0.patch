@@ -1,0 +1,20 @@
+diff --git a/dist/bin/loadEnv.js b/dist/bin/loadEnv.js
+index b61ecc1684f0b686fa8bbcefa68b5ed825c09420..91a21574b2fbdc81701b1f948252ac7e33cc19ee 100644
+--- a/dist/bin/loadEnv.js
++++ b/dist/bin/loadEnv.js
+@@ -1,4 +1,5 @@
+-import nextEnvImport from '@next/env';
++// import nextEnvImport from '@next/env';
++import * as nextEnvImport from '@next/env';
+ import { findUpSync } from '../utilities/findUp.js';
+ const { loadEnvConfig } = nextEnvImport;
+ /**
+@@ -14,7 +15,7 @@ const { loadEnvConfig } = nextEnvImport;
+         // use findUp to find the env file. So, run loadEnvConfig for every directory upwards
+         findUpSync({
+             // @ts-expect-error - vestiges of when tsconfig was not strict. Feel free to improve
+-            condition: (dir)=>{
++            condition: (dir) => {
+                 const { loadedEnvFiles } = loadEnvConfig(dir, true);
+                 if (loadedEnvFiles?.length) {
+                     return true;

@@ -5,9 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
+    "dev:worker": "wrangler dev",
     "build": "next build",
     "start": "next start",
+    "build:worker": "opennextjs-cloudflare",
     "lint": "eslint",
+    "preview": "npm run build:worker && npm run dev:worker",
+    "deploy": "npm run build:worker && wrangler deploy",
     "migrate:media": "node --env-file=.env scripts/migrate-wordpress-media.mjs",
     "migrate:content": "node --env-file=.env --import tsx scripts/import-wordpress-content.ts",
     "migrate:finalize": "node --env-file=.env --import tsx scripts/finalize-legacy-taxonomy.ts",
@@ -16,18 +20,23 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1093.0",
+    "@borewit/text-codec": "^0.2.2",
     "@kfonts/nanum-square": "^0.2.0",
     "@opennextjs/cloudflare": "^1.20.2",
     "@payloadcms/db-postgres": "^3.86.0",
     "@payloadcms/next": "^3.86.0",
     "@payloadcms/storage-s3": "^3.86.0",
+    "@tokenizer/inflate": "^0.4.1",
     "fast-xml-parser": "^5.10.1",
     "graphql": "^16.14.2",
+    "jose": "5.10.0",
     "next": "16.2.11",
     "payload": "^3.86.0",
+    "pg-cloudflare": "^1.4.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "sharp": "^0.35.3"
+    "sharp": "^0.35.3",
+    "token-types": "^6.1.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -39,6 +48,8 @@
     "tailwindcss": "^4",
     "tsx": "^4.23.1",
     "typescript": "^5",
-    "wrangler": "^4.114.0"
+    "wrangler": "^4.114.0",
+    "@cloudflare/workers-types": "^4.2025.0",
+    "@opennextjs/cloudflare": "^0.1.0"
   }
 }
