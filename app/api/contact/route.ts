@@ -37,7 +37,11 @@ export async function POST(request: Request) {
 
   const safeSubject = escapeHTML(subject); const safeMessage = escapeHTML(message).replace(/\n/g, "<br>"); const safeName = escapeHTML(name); const safeEmail = escapeHTML(email); const safePhone = escapeHTML(phone || "미입력");
   const emailResponse = await fetch(`https://api.cloudflare.com/client/v4/accounts/${encodeURIComponent(accountID)}/email/sending/send`, { method: "POST", headers: { Authorization: `Bearer ${emailToken}`, "Content-Type": "application/json" }, body: JSON.stringify({ to: recipient, from: { address: emailFrom, name: "Kim Sekyu Real Estate" }, reply_to: email, subject: `[문의하기] ${subject}`, html: `<h2>${safeSubject}</h2><p><strong>이름:</strong> ${safeName}<br><strong>이메일:</strong> ${safeEmail}<br><strong>전화번호:</strong> ${safePhone}</p><p>${safeMessage}</p>`, text: `제목: ${subject}\n이름: ${name}\n이메일: ${email}\n전화번호: ${phone || "미입력"}\n\n${message}` }) });
-  if (!emailResponse.ok) return NextResponse.json({ message: "문의 이메일 전송에 실패했습니다. 잠시 후 다시 시도해 주세요." }, { status: 502 });
+  if (!emailResponse.ok) {
+    const providerError = await emailResponse.text().catch(() => "");
+    console.error("Cloudflare Email Sending rejected contact message", { status: emailResponse.status, response: providerError.slice(0, 1000) });
+    return NextResponse.json({ message: "문의 이메일 전송에 실패했습니다. 잠시 후 다시 시도하시거나 kimsekyu@gmail.com 으로 문의 바랍니다." }, { status: 502 });
+  }
 
   const payload = await getPayload({ config });
   await payload.create({ collection: "questions", data: { subject, message, name, email, phone, publishedAt: new Date().toISOString(), viewCount: 0, status: "new" }, overrideAccess: true });
