@@ -25,13 +25,13 @@ async function main() {
   let page = 1;
   let total = 0;
   while (true) {
-    const result = await payload.find({ collection: "news", limit: 250, page, depth: 0, overrideAccess: true });
+    const result = await payload.find({ collection: "news-feed", limit: 250, page, depth: 0, overrideAccess: true });
     total = result.totalDocs;
     for (const item of result.docs) {
     const legacyCategory = String(item.legacy_category || item.category || "");
     const mapping = legacyMapping[legacyCategory];
     if (!mapping) { skipped += 1; continue; }
-    await payload.update({ collection: "news", id: item.id, data: { legacy_category: legacyCategory, category: mapping.category }, overrideAccess: true });
+    await payload.update({ collection: "news-feed", id: item.id, data: { legacy_category: legacyCategory, category: mapping.category as never }, overrideAccess: true });
     updated += 1;
     }
     console.log(`Processed ${Math.min(page * 250, total)}/${total}`);

@@ -32,7 +32,7 @@ function renderNode(node: LexicalNode): string {
     return `<a href="${escapeHTML(url)}"${target}>${children}</a>`;
   }
   if (node.type === "upload") {
-    const value = typeof node.value === "object" ? node.value : {};
+    const value = node.value && typeof node.value === "object" ? node.value as Record<string, unknown> : {};
     const url = value.url || value.thumbnailURL;
     if (!url) return "";
     return `<figure><img src="${escapeHTML(url)}" alt="${escapeHTML(value.alt || "")}" loading="lazy" /></figure>`;
@@ -54,5 +54,5 @@ function renderNode(node: LexicalNode): string {
 export function lexicalToHTML(value: unknown) {
   const root = value && typeof value === "object" && "root" in value ? (value as Record<string, unknown>).root : value;
   if (!root || typeof root !== "object") return "";
-  return renderNode(root);
+  return renderNode(root as LexicalNode);
 }

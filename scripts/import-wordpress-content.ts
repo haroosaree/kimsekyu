@@ -63,7 +63,7 @@ let updated = 0;
 let processed = 0;
 const [existingPages, existingNews] = await Promise.all([
   payload.find({ collection: "pages", limit: 1000, depth: 0, overrideAccess: true }),
-  payload.find({ collection: "news", limit: 5000, depth: 0, overrideAccess: true }),
+  payload.find({ collection: "news-feed", limit: 5000, depth: 0, overrideAccess: true }),
 ]);
 const pageIdsByLegacyUrl = new Map(existingPages.docs.map((doc) => [doc.legacyUrl, doc.id]));
 const newsIdsByLegacyId = new Map(existingNews.docs.map((doc) => [doc.legacyId, doc.id]));
@@ -91,7 +91,7 @@ async function upsertNews(item: LegacyItem, category: string, legacyBoardId?: st
   const legacyId = string(item["wp:post_id"]);
   const existingId = newsIdsByLegacyId.get(legacyId);
   const baseSlug = safeSlug(string(item["wp:post_name"]), `legacy-news-${legacyId}`);
-  const slugMatches = await payload.find({ collection: "news", where: { slug: { equals: baseSlug } }, limit: 2, depth: 0, overrideAccess: true, select: { id: true, legacyId: true } });
+  const slugMatches = await payload.find({ collection: "news-feed", where: { slug: { equals: baseSlug } }, limit: 2, depth: 0, overrideAccess: true, select: { id: true, legacyId: true } });
   const slug = slugMatches.docs.some((doc) => String(doc.legacyId) !== legacyId && String(doc.id) !== String(existingId)) ? `${baseSlug}-${legacyId}` : baseSlug;
   const data = {
     title: string(item.title) || `Untitled legacy article ${legacyId}`,
@@ -110,10 +110,10 @@ async function upsertNews(item: LegacyItem, category: string, legacyBoardId?: st
   };
   if (existingId) {
     const { legacyViewCount: ___, viewCount: __, readCount: _, ...updateData } = data;
-    await payload.update({ collection: "news", id: existingId, data: updateData, overrideAccess: true });
+    await payload.update({ collection: "news-feed", id: existingId, data: updateData as never, overrideAccess: true });
     updated += 1;
   } else {
-    await payload.create({ collection: "news", data, overrideAccess: true });
+    await payload.create({ collection: "news-feed", data: data as never, overrideAccess: true });
     created += 1;
   }
 }

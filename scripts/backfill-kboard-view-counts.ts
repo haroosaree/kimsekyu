@@ -48,7 +48,7 @@ async function fetchText(url: string) {
 }
 
 const payload = await getPayload({ config });
-const legacyNews = await payload.find({ collection: "news", limit: 5000, depth: 0, overrideAccess: true });
+const legacyNews = await payload.find({ collection: "news-feed", limit: 5000, depth: 0, overrideAccess: true });
 const newsByKboardUID = new Map(
   legacyNews.docs
     .filter((item) => item.legacyUrl?.includes("kboard_content_redirect="))
@@ -81,7 +81,7 @@ if (!dryRun) {
   await Promise.all(Array.from({ length: 6 }, async () => {
     while (updateIndex < updates.length) {
       const update = updates[updateIndex++];
-      await payload.update({ collection: "news", id: update.id, data: { legacyViewCount: update.legacyViewCount, viewCount: update.viewCount }, overrideAccess: true });
+      await payload.update({ collection: "news-feed", id: update.id, data: { legacyViewCount: update.legacyViewCount, viewCount: update.viewCount }, overrideAccess: true });
       if (updateIndex % 100 === 0 || updateIndex === updates.length) console.log(`Updated ${updateIndex}/${updates.length}`);
     }
   }));

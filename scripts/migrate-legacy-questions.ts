@@ -37,7 +37,7 @@ function plainText(html: string) {
 async function main() {
   const payload = await getPayload({ config });
   const legacyQuestions = await payload.find({
-    collection: "news",
+    collection: "news-feed",
     where: { legacyBoardId: { equals: legacyBoardID } },
     limit: 500,
     depth: 0,
@@ -58,7 +58,7 @@ async function main() {
     });
 
     if (existing.totalDocs === 0) {
-      const contentHTML = String(legacyQuestion.contentHTML || "");
+      const contentHTML = String(legacyQuestion.legacyContent || "");
       await payload.create({
         collection: "questions",
         data: {
@@ -79,7 +79,7 @@ async function main() {
       migrated += 1;
     }
 
-    await payload.delete({ collection: "news", id: legacyQuestion.id, overrideAccess: true });
+    await payload.delete({ collection: "news-feed", id: legacyQuestion.id, overrideAccess: true });
     removed += 1;
   }
 

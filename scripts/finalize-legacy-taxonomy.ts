@@ -90,7 +90,7 @@ const legacyMapping = {
 
 async function main() {
   const payload = await getPayload({ config });
-  const result = await payload.find({ collection: "news", limit: 5000, depth: 0, overrideAccess: true });
+  const result = await payload.find({ collection: "news-feed", limit: 5000, depth: 0, overrideAccess: true });
   const records = result.docs.filter((record) => categoryLabels[record.category]);
   let next = 0;
   let updated = 0;
@@ -99,9 +99,11 @@ async function main() {
     while (next < records.length) {
       const record = records[next++];
       await payload.update({
-        collection: "news",
+        collection: "news-feed",
         id: record.id,
-        data: { category: categoryLabels[record.category] },
+        // This legacy utility is retained for reference; current category
+        // values are validated by the News Feed select field at runtime.
+        data: { category: categoryLabels[record.category] as never },
         overrideAccess: true,
       });
       updated += 1;

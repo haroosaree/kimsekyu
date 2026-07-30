@@ -9,20 +9,25 @@ const normalizeLineBreaks = (html: string) => html
 
 const needsNormalization = (html: string) => /\r?\n|(<br\s*\/?>(?:\s|&nbsp;)*){2,}|<br\s*\/?>\s*<(?:div|p|h[1-6]|ul|ol|li|table|thead|tbody|tr|blockquote|pre|figure)\b|<\/(?:div|p|h[1-6]|ul|ol|li|table|thead|tbody|tr|blockquote|pre|figure)>\s*<br\s*\/?>/i.test(html);
 
-async function normalizeCollection(collection: "pages" | "news") {
+async function normalizeCollection(collection: "pages" | "news-feed") {
   const payload = await getPayload({ config });
   const result = await payload.find({ collection, limit: 5000, depth: 0, overrideAccess: true });
-  const records = result.docs.filter((record) => typeof record.contentHTML === "string" && needsNormalization(record.contentHTML));
+  const contentField = collection === "pages" ? "contentHTML" : "legacyContent";
+  const records = result.docs.filter((record) => {
+    const value = (record as unknown as Record<string, unknown>)[contentField];
+    return typeof value === "string" && needsNormalization(value);
+  });
   let next = 0;
   let updated = 0;
 
   await Promise.all(Array.from({ length: 6 }, async () => {
     while (next < records.length) {
       const record = records[next++];
+      const content = String((record as unknown as Record<string, unknown>)[contentField] || "");
       await payload.update({
         collection,
         id: record.id,
-        data: { contentHTML: normalizeLineBreaks(record.contentHTML as string) },
+        data: { [contentField]: normalizeLineBreaks(content) } as never,
         overrideAccess: true,
       });
       updated += 1;
@@ -32,5 +37,5 @@ async function normalizeCollection(collection: "pages" | "news") {
   return { total: result.totalDocs, updated };
 }
 
-const [pages, news] = await Promise.all([normalizeCollection("pages"), normalizeCollection("news")]);
+const [pages, news] = await Promise.all([normalizeCollection("pages"), normalizeCollection("news-feed")]);
 console.log(`Line-break normalization complete: ${pages.updated}/${pages.total} Pages, ${news.updated}/${news.total} News.`);
