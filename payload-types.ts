@@ -70,7 +70,9 @@ export interface Config {
     users: User;
     media: Media;
     pages: Page;
-    news: News;
+    categories: Category;
+    'rich-content': RichContent;
+    'news-feed': NewsFeed;
     questions: Question;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -82,7 +84,9 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
-    news: NewsSelect<false> | NewsSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    'rich-content': RichContentSelect<false> | RichContentSelect<true>;
+    'news-feed': NewsFeedSelect<false> | NewsFeedSelect<true>;
     questions: QuestionsSelect<false> | QuestionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -196,17 +200,78 @@ export interface Page {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "news".
+ * via the `definition` "categories".
  */
-export interface News {
+export interface Category {
   id: number;
   title: string;
   slug: string;
-  category: string;
-  legacyId: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rich-content".
+ */
+export interface RichContent {
+  id: number;
+  content?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news-feed".
+ */
+export interface NewsFeed {
+  id: number;
+  title: string;
+  slug: string;
+  category:
+    | 'property-info'
+    | 'austin-news'
+    | 'resources/school'
+    | 'resources/koreanbusiness'
+    | 'resources/tours'
+    | 'resources/gallery';
+  legacy_category?: string | null;
+  legacyId?: string | null;
   legacyBoardId?: string | null;
   legacyUrl?: string | null;
-  contentHTML?: string | null;
+  /**
+   * Migrated legacy HTML content.
+   */
+  legacyContent?: string | null;
+  /**
+   * Optional raw HTML source for new posts.
+   */
+  rawContent?: string | null;
+  /**
+   * Compose the article with formatting and R2-backed media uploads.
+   */
+  richContent?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   publishedAt: string;
   legacyViewCount: number;
   viewCount: number;
@@ -275,8 +340,12 @@ export interface PayloadLockedDocument {
         value: number | Page;
       } | null)
     | ({
-        relationTo: 'news';
-        value: number | News;
+        relationTo: 'categories';
+        value: number | Category;
+      } | null)
+    | ({
+        relationTo: 'rich-content';
+        value: number | RichContent;
       } | null)
     | ({
         relationTo: 'questions';
@@ -384,16 +453,38 @@ export interface PagesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "news_select".
+ * via the `definition` "categories_select".
  */
-export interface NewsSelect<T extends boolean = true> {
+export interface CategoriesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rich-content_select".
+ */
+export interface RichContentSelect<T extends boolean = true> {
+  content?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news-feed_select".
+ */
+export interface NewsFeedSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   category?: T;
+  legacy_category?: T;
   legacyId?: T;
   legacyBoardId?: T;
   legacyUrl?: T;
-  contentHTML?: T;
+  legacyContent?: T;
+  rawContent?: T;
+  richContent?: T;
   publishedAt?: T;
   legacyViewCount?: T;
   viewCount?: T;

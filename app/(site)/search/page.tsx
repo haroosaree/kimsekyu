@@ -15,8 +15,8 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   const page = pageFrom(rawPage);
   const payload = await getPayload({ config });
   const news = query.length >= 2 ? await payload.find({
-    collection: "news",
-    where: { or: [{ title: { like: query } }, { contentHTML: { like: query } }] },
+    collection: "news-feed",
+    where: { or: [{ title: { like: query } }, { legacyContent: { like: query } }] },
     depth: 0,
     limit: PAGE_SIZE,
     page,
@@ -30,7 +30,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
     <h1>검색 결과</h1>
     {query.length < 2 ? <p className="search-message">검색어를 두 글자 이상 입력해 주세요.</p> : <>
       <p className="search-message"><b>“{query}”</b> 검색 결과 {news?.totalDocs.toLocaleString("en-US")}건</p>
-      <NewsArchiveList initialItems={(news?.docs ?? []).map((item) => ({ id: item.id, title: item.title as string, slug: item.slug, publishedAt: item.publishedAt, viewCount: item.viewCount ?? 0, thumbnailURL: legacyThumbnailURL(item.contentHTML as string) }))} initialPage={page} totalPages={news?.totalPages ?? 0} basePath="/search" searchQuery={query} />
+      <NewsArchiveList initialItems={(news?.docs ?? []).map((item) => ({ id: item.id, title: item.title as string, slug: item.slug, publishedAt: item.publishedAt, viewCount: item.viewCount ?? 0, thumbnailURL: legacyThumbnailURL(item.legacyContent as string) }))} initialPage={page} totalPages={news?.totalPages ?? 0} basePath="/search" searchQuery={query} />
     </>}
   </main>;
 }

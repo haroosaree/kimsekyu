@@ -24,12 +24,12 @@ export default async function ArchiveSubmenu({ params, searchParams }: { params:
 
   const archive = slug === "austin-economy" || isResource ? austinEconomySubmenus[submenu as keyof typeof austinEconomySubmenus] : undefined;
   if (!archive) notFound();
-  const news = await payload.find({ collection: "news", where: { category: { in: [...archive.categories] } }, depth: 0, limit: PAGE_SIZE, page, sort: "-publishedAt", overrideAccess: true });
+  const news = await payload.find({ collection: "news-feed", where: { category: { in: [...archive.categories] } }, depth: 0, limit: PAGE_SIZE, page, sort: "-publishedAt", overrideAccess: true });
 
   return <><MenuHero /><main className="archive-page">
     <nav className="breadcrumb" aria-label="현재 위치"><Link href="/">홈</Link><span>›</span><Link href={isResource ? "/resources" : "/austin-news"}>{isResource ? "자료실" : "어스틴 소식"}</Link><span>›</span><span>{archive.title}</span></nav>
     <p className="eyebrow">{isResource ? "RESOURCES" : "AUSTIN NEWS"}</p>
     <h1>{archive.title}</h1>
-    <NewsArchiveList initialItems={news.docs.map((item) => ({ id: item.id, title: item.title as string, slug: item.slug, publishedAt: item.publishedAt, viewCount: item.viewCount ?? 0, thumbnailURL: legacyThumbnailURL(item.contentHTML as string) }))} initialPage={page} totalPages={news.totalPages} basePath={`/${slug}/${submenu}`} hideMeta={isResource} />
+    <NewsArchiveList initialItems={news.docs.map((item) => ({ id: item.id, title: item.title as string, slug: item.slug, publishedAt: item.publishedAt, viewCount: item.viewCount ?? 0, thumbnailURL: legacyThumbnailURL(item.legacyContent as string) }))} initialPage={page} totalPages={news.totalPages} basePath={`/${slug}/${submenu}`} hideMeta={isResource} />
   </main></>;
 }

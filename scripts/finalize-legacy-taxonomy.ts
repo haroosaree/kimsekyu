@@ -16,7 +16,7 @@ const categoryLabels: Record<string, string> = {
   "legacy-board-13": "부동산 질문 · 답변",
   "legacy-board-14": "어스틴 한인 커뮤니티",
   "legacy-board-15": "어스틴 생활 · 명소",
-  blog: "블로그",
+  "blog": "블로그",
 };
 
 const navigationItems = [
@@ -28,6 +28,65 @@ const navigationItems = [
   { label: "질문/답변", href: "/news/questions", legacyUrl: "http://kimsekyu.com/index.php/q/", openInNewTab: false },
   { label: "김세규 부동산 소개", href: "/agent", legacyUrl: "http://kimsekyu.com/index.php/agent/", openInNewTab: false },
 ];
+
+const legacyMapping = {
+  "legacy-board-1": {
+    label: "미국 부동산 소식 / 시장 정보",
+    category: 'property-info'
+  },
+  "legacy-board-2": {
+    label: "주택 매도 가이드",
+    category: 'property-info'
+  },
+  "legacy-board-3": {
+    label: "주택 구매 / 생활 정보",
+    category: 'property-info'
+  },
+  "legacy-board-4": {
+    label: "융자 · 모기지 · 크레딧",
+    category: 'property-info'
+  },
+  "legacy-board-5": {
+    label: "어스틴 부동산",
+    category: 'property-info'
+  },
+  "legacy-board-6": {
+    label: "어스틴 지역 · 동네 정보",
+    category: 'austin-news'
+  },
+  "legacy-board-7": {
+    label: "어스틴 경제 · 순위 · 고용",
+    category: 'austin-news'
+  },
+  "legacy-board-8": {
+    label: "어스틴 경제 · 비즈니스 뉴스",
+    category: 'austin-news'
+  },
+  "legacy-board-9": {
+    label: "어스틴 한인 비즈니스 · 기관",
+    category: 'resources/koreanbusiness'
+  },
+  "legacy-board-10": {
+    label: "여행 · 레저",
+    category: 'resources/tours'
+  },
+  "legacy-board-12": {
+    label: "교육 · 학군 · 대학",
+    category: 'resources/school'
+  },
+  "legacy-board-13": {
+    label: "부동산 질문 · 답변",
+    category: 'property-info'
+  },
+  "legacy-board-14": {
+    label: "어스틴 한인 커뮤니티",
+    category: 'austin-news'
+  },
+  "legacy-board-15": {
+    label: "어스틴 생활 · 명소",
+    category: 'resources/tours'
+  },
+}
 
 async function main() {
   const payload = await getPayload({ config });

@@ -90,10 +90,14 @@ async function upsertPage(item: LegacyItem) {
 async function upsertNews(item: LegacyItem, category: string, legacyBoardId?: string) {
   const legacyId = string(item["wp:post_id"]);
   const existingId = newsIdsByLegacyId.get(legacyId);
+  const baseSlug = safeSlug(string(item["wp:post_name"]), `legacy-news-${legacyId}`);
+  const slugMatches = await payload.find({ collection: "news", where: { slug: { equals: baseSlug } }, limit: 2, depth: 0, overrideAccess: true, select: { id: true, legacyId: true } });
+  const slug = slugMatches.docs.some((doc) => String(doc.legacyId) !== legacyId && String(doc.id) !== String(existingId)) ? `${baseSlug}-${legacyId}` : baseSlug;
   const data = {
     title: string(item.title) || `Untitled legacy article ${legacyId}`,
-    slug: safeSlug(string(item["wp:post_name"]), `legacy-news-${legacyId}`),
+    slug,
     category,
+    legacy_category: category,
     legacyId,
     legacyBoardId,
     legacyUrl: string(item.link),
@@ -123,7 +127,7 @@ const tasks = [
   ...posts.map((item) => () => upsertNews(item, "blog")),
 ];
 let nextTask = 0;
-await Promise.all(Array.from({ length: 4 }, async () => {
+await Promise.all(Array.from({ length: 1 }, async () => {
   while (nextTask < tasks.length) {
     const task = tasks[nextTask++];
     await task();

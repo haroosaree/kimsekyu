@@ -6,3 +6,5 @@ allowBuilds:
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+patchedDependencies:
+  '@payloadcms/drizzle@3.86.0': patches/@payloadcms__drizzle@3.86.0.patch

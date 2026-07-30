@@ -12,7 +12,8 @@
     "migrate:content": "node --env-file=.env --import tsx scripts/import-wordpress-content.ts",
     "migrate:finalize": "node --env-file=.env --import tsx scripts/finalize-legacy-taxonomy.ts",
     "migrate:linebreaks": "node --env-file=.env --import tsx scripts/normalize-content-linebreaks.ts",
-    "migrate:kboard-views": "node --env-file=.env --import tsx scripts/backfill-kboard-view-counts.ts"
+    "migrate:kboard-views": "node --env-file=.env --import tsx scripts/backfill-kboard-view-counts.ts",
+    "migrate:categories": "node --env-file=.env --import tsx scripts/migrate-news-categories.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1093.0",
@@ -20,6 +21,7 @@
     "@opennextjs/cloudflare": "^1.20.2",
     "@payloadcms/db-postgres": "^3.86.0",
     "@payloadcms/next": "^3.86.0",
+    "@payloadcms/richtext-lexical": "^3.86.0",
     "@payloadcms/storage-s3": "^3.86.0",
     "fast-xml-parser": "^5.10.1",
     "graphql": "^16.14.2",

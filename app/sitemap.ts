@@ -9,11 +9,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const payload = await getPayload({ config });
   const [pages, firstNewsPage] = await Promise.all([
     payload.find({ collection: "pages", limit: 500, depth: 0, overrideAccess: true, select: { slug: true, updatedAt: true } }),
-    payload.find({ collection: "news", limit: 1000, depth: 0, page: 1, overrideAccess: true, select: { slug: true, updatedAt: true, publishedAt: true } }),
+    payload.find({ collection: "news-feed", limit: 1000, depth: 0, page: 1, overrideAccess: true, select: { slug: true, updatedAt: true, publishedAt: true } }),
   ]);
   const news = [...firstNewsPage.docs];
   for (let page = 2; page <= firstNewsPage.totalPages; page += 1) {
-    const nextPage = await payload.find({ collection: "news", limit: 1000, depth: 0, page, overrideAccess: true, select: { slug: true, updatedAt: true, publishedAt: true } });
+    const nextPage = await payload.find({ collection: "news-feed", limit: 1000, depth: 0, page, overrideAccess: true, select: { slug: true, updatedAt: true, publishedAt: true } });
     news.push(...nextPage.docs);
   }
   const staticRoutes = ["", "/property-info", "/austin-news", "/resources", "/resources/school", "/resources/koreanbusiness", "/resources/tours", "/resources/gallery", "/contact", "/agent"];

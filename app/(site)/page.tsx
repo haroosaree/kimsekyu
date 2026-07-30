@@ -49,7 +49,7 @@ async function getHomepageData() {
   try {
     const payload = await getPayload({ config });
     const [news, settings, homepage] = await Promise.all([
-      payload.find({ collection: "news", depth: 0, limit: 3, sort: "-publishedAt", overrideAccess: true }),
+      payload.find({ collection: "news-feed", depth: 0, limit: 3, sort: "-publishedAt", overrideAccess: true }),
       payload.findGlobal({ slug: "site-settings", depth: 1, overrideAccess: true }),
       payload.findGlobal({ slug: "homepage", depth: 1, overrideAccess: true }),
     ]);

@@ -30,11 +30,12 @@ if (missing.length > 0) {
 const xml = await readFile(process.env.WORDPRESS_EXPORT_PATH, "utf8");
 const attachmentUrls = [...xml.matchAll(/<wp:attachment_url><!\[CDATA\[(.*?)\]\]><\/wp:attachment_url>/g)]
   .map((match) => match[1]);
-const contentAssetUrls = [...xml.matchAll(/https?:\/\/kimsekyu\.com\/wp-content\/uploads\/[^\s"'<>\\]+/g)]
+const contentAssetUrls = [...xml.matchAll(/(?:https?:\/\/kimsekyu\.com)?\/wp-content\/uploads\/[^\s"'<>\\]+/g)]
   // The generic matcher also sees attachment URL CDATA and includes its closing ]].
   .map((match) => match[0].replaceAll("&amp;", "&").replace(/\]\]+$/, ""));
 
 const uniqueUrls = [...new Set([...attachmentUrls, ...contentAssetUrls])]
+  .map((url) => url.startsWith("/") ? `http://kimsekyu.com${url}` : url)
   .filter((url) => url.startsWith("http://kimsekyu.com/wp-content/uploads/"));
 const selectedUrls = Number.isFinite(limit) ? uniqueUrls.slice(0, limit) : uniqueUrls;
 

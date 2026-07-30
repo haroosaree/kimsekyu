@@ -1,5 +1,6 @@
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { s3Storage } from "@payloadcms/storage-s3";
+import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig } from "payload";
 
 const mediaCollectionPrefix = "site/general";
@@ -10,6 +11,22 @@ const serverURL = process.env.NEXT_PUBLIC_SERVER_URL
   || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined)
   || (process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://kimsekyu.com");
 const isAdmin = ({ req }: { req: { user?: unknown } }) => Boolean(req.user);
+
+const newsCategoryOptions = [
+  "미국 부동산 소식 / 시장 정보", "주택 매도 가이드", "주택 구매 / 생활 정보", "융자 · 모기지 · 크레딧",
+  "어스틴 부동산", "어스틴 지역 · 동네 정보", "어스틴 경제 · 순위 · 고용", "어스틴 경제 · 비즈니스 뉴스",
+  "어스틴 한인 비즈니스 · 기관", "여행 · 레저", "교육 · 학군 · 대학", "부동산 질문 · 답변",
+  "어스틴 한인 커뮤니티", "어스틴 생활 · 명소", "블로그",
+].map((value) => ({ label: value, value }));
+
+function slugFromTitle(value: unknown) {
+  return String(value ?? "")
+    .normalize("NFKC")
+    .trim()
+    .toLocaleLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, "-")
+    .replace(/^-+|-+$/g, "");
+}
 
 export default buildConfig({
   admin: {
@@ -61,22 +78,72 @@ export default buildConfig({
       ],
     },
     {
-      slug: "news",
+      slug: "categories",
+      admin: { useAsTitle: "title", defaultColumns: ["title", "slug"] },
+      fields: [
+        { name: "title", type: "text", required: true, unique: true },
+        { name: "slug", type: "text", required: true, unique: true, index: true },
+      ],
+    },
+    {
+      // Retained because the database already contains this collection and
+      // Payload's locked-document relations reference it.
+      slug: "rich-content",
+      admin: { useAsTitle: "id", hidden: true },
+      fields: [
+        { name: "content", type: "json" },
+      ],
+    },
+    {
+      slug: "news-feed",
+      // Payload 3.86's Postgres adapter can return an undefined row while
+      // upserting admin document locks against this manually migrated table.
+      // Disable only the collaborative lock workflow; editing and saving are
+      // otherwise unchanged.
+      lockDocuments: false,
       defaultSort: "-publishedAt",
       admin: { useAsTitle: "title", defaultColumns: ["title", "category", "publishedAt"] },
+      hooks: {
+        beforeValidate: [async ({ data, req, originalDoc }: { data?: Record<string, unknown>; req: any; originalDoc?: Record<string, unknown> }) => {
+          const next = { ...data };
+          const generatedPreviousSlug = originalDoc?.title ? slugFromTitle(originalDoc.title) : "";
+          if (!next.slug || (originalDoc && next.slug === generatedPreviousSlug)) next.slug = slugFromTitle(next.title) || `news-${Date.now()}`;
+          if (next.categoryRef && !next.category) {
+            const category = await req.payload.findByID({ collection: "categories", id: next.categoryRef, depth: 0 });
+            if (category?.title) next.category = category.title;
+          }
+          return next;
+        }],
+      },
       fields: [
-        { name: "title", type: "text", required: true, localized: true },
+        { name: "title", type: "text", required: true },
         { name: "slug", type: "text", required: true, unique: true, index: true },
-        { name: "category", type: "text", required: true, index: true },
-        { name: "legacyId", type: "text", required: true, unique: true, index: true },
-        { name: "legacyBoardId", type: "text", index: true },
-        { name: "legacyUrl", type: "text", unique: true, index: true },
-        { name: "contentHTML", type: "code", admin: { language: "html" }, localized: true },
-        { name: "publishedAt", type: "date", required: true, index: true },
-        { name: "legacyViewCount", type: "number", required: true, defaultValue: 0, min: 0, admin: { readOnly: true } },
-        { name: "viewCount", type: "number", required: true, defaultValue: 0, min: 0, admin: { readOnly: true } },
-        { name: "readCount", type: "number", required: true, defaultValue: 0, min: 0, admin: { readOnly: true } },
-        { name: "legacyAuthor", type: "text" },
+        { name: "category", type: "select", required: true, index: true, options: [
+          { label: "부동산 정보", value: "property-info" },
+          { label: "어스틴 소식", value: "austin-news" },
+          { label: "자료실 · 교육/학군", value: "resources/school" },
+          { label: "자료실 · 한인업소록", value: "resources/koreanbusiness" },
+          { label: "자료실 · 관광명소", value: "resources/tours" },
+          { label: "자료실 · 사진/풍경", value: "resources/gallery" },
+        ] },
+        { name: "legacy_category", type: "text", index: true, admin: { hidden: true } },
+        { name: "legacyId", type: "text", unique: true, index: true, admin: { hidden: true } },
+        { name: "legacyBoardId", type: "text", index: true, admin: { hidden: true } },
+        { name: "legacyUrl", type: "text", unique: true, index: true, admin: { hidden: true } },
+        { name: "legacyContent", label: "Legacy Content HTML", type: "code", admin: { language: "html", description: "Migrated legacy HTML content.", condition: (_data, _siblingData, { operation }) => operation !== "create" } },
+        { name: "rawContent", label: "Raw HTML", type: "textarea", admin: { description: "Optional raw HTML source for new posts." } },
+        {
+          name: "richContent",
+          label: "Rich Content",
+          type: "richText",
+          editor: lexicalEditor(),
+          admin: { description: "Compose the article with formatting and R2-backed media uploads." },
+        },
+        { name: "publishedAt", type: "date", required: true, index: true, defaultValue: () => new Date().toISOString() },
+        { name: "legacyViewCount", type: "number", required: true, defaultValue: 0, min: 0, admin: { hidden: true } },
+        { name: "viewCount", type: "number", required: true, defaultValue: 0, min: 0, admin: { hidden: true } },
+        { name: "readCount", type: "number", required: true, defaultValue: 0, min: 0, admin: { hidden: true } },
+        { name: "legacyAuthor", type: "text", admin: { hidden: true } },
       ],
     },
     {
