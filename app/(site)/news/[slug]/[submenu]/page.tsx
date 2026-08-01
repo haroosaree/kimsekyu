@@ -29,7 +29,7 @@ export default async function NewsSubmenu({ params, searchParams }: { params: Pr
     overrideAccess: true,
   });
 
-  return <><MenuHero /><main className="archive-page">
+  return <><MenuHero menuHref={`/${slug}/${submenu}`} /><main className="archive-page">
     <nav className="breadcrumb" aria-label="현재 위치"><Link href="/">홈</Link><span>›</span><Link href={isResource ? "/resources" : "/news/austin-economy"}>{isResource ? "자료실" : "어스틴 경제/뉴스"}</Link><span>›</span><span>{archive.title}</span></nav>
     <p className="eyebrow">{isResource ? "RESOURCES" : "AUSTIN ECONOMY & NEWS"}</p>
     <h1>{archive.title}</h1>

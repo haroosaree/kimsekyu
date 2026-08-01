@@ -8,7 +8,7 @@ const resources = [
 ];
 
 export default function ResourcesPage() {
-  return <><MenuHero /><main className="archive-page">
+  return <><MenuHero menuHref="/resources" /><main className="archive-page">
     <nav className="breadcrumb" aria-label="현재 위치"><Link href="/">홈</Link><span>›</span><span>자료실</span></nav>
     <p className="eyebrow">RESOURCES</p>
     <h1>자료실</h1>

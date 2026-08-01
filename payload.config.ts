@@ -19,6 +19,16 @@ const newsCategoryOptions = [
   "어스틴 한인 커뮤니티", "어스틴 생활 · 명소", "블로그",
 ].map((value) => ({ label: value, value }));
 
+const legacyBoardOptions = [
+  ["legacy-board-1", "미국 부동산 소식 / 시장 정보"], ["legacy-board-2", "집을 팔때"],
+  ["legacy-board-3", "집을 살때"], ["legacy-board-4", "융자 · 모기지 · 크레딧"],
+  ["legacy-board-5", "어스틴 부동산"], ["legacy-board-6", "어스틴 지역 · 동네 정보"],
+  ["legacy-board-7", "어스틴 경제 · 순위 · 고용"], ["legacy-board-8", "어스틴 경제 · 비즈니스 뉴스"],
+  ["legacy-board-9", "어스틴 한인 비즈니스 · 기관"], ["legacy-board-10", "여행 · 레저"], ["legacy-board-11", "어스틴 사진 · 풍경"],
+  ["legacy-board-12", "교육 · 학군 · 대학"], ["legacy-board-13", "부동산 질문 · 답변"],
+  ["legacy-board-14", "어스틴 한인 커뮤니티"], ["legacy-board-15", "어스틴 생활 · 명소"],
+].map(([value, label]) => ({ value, label }));
+
 function slugFromTitle(value: unknown) {
   return String(value ?? "")
     .normalize("NFKC")
@@ -37,7 +47,10 @@ export default buildConfig({
   collections: [
     {
       slug: "users",
-      auth: true,
+      // auth: true,
+      auth: {
+        useAPIKey: true,
+      },
       fields: [{ name: "name", type: "text", required: true }],
     },
     {
@@ -118,17 +131,19 @@ export default buildConfig({
       fields: [
         { name: "title", type: "text", required: true },
         { name: "slug", type: "text", required: true, unique: true, index: true },
-        { name: "category", type: "select", required: true, index: true, options: [
-          { label: "부동산 정보", value: "property-info" },
-          { label: "어스틴 소식", value: "austin-news" },
-          { label: "자료실 · 교육/학군", value: "resources/school" },
-          { label: "자료실 · 한인업소록", value: "resources/koreanbusiness" },
-          { label: "자료실 · 관광명소", value: "resources/tours" },
-          { label: "자료실 · 사진/풍경", value: "resources/gallery" },
-        ] },
+        {
+          name: "category", type: "select", required: true, index: true, options: [
+            { label: "부동산 정보", value: "property-info" },
+            { label: "어스틴 소식", value: "austin-news" },
+            { label: "자료실 · 교육/학군", value: "resources/school" },
+            { label: "자료실 · 한인업소록", value: "resources/koreanbusiness" },
+            { label: "자료실 · 관광명소", value: "resources/tours" },
+            { label: "자료실 · 사진/풍경", value: "resources/gallery" },
+          ]
+        },
         { name: "legacy_category", type: "text", index: true, admin: { hidden: true } },
         { name: "legacyId", type: "text", unique: true, index: true, admin: { hidden: true } },
-        { name: "legacyBoardId", type: "text", index: true, admin: { hidden: true } },
+        { name: "legacyBoardId", label: "Legacy menu", type: "select", options: legacyBoardOptions, index: true, admin: { description: "Assign the legacy menu/board for restored navigation and filtering." } },
         { name: "legacyUrl", type: "text", unique: true, index: true, admin: { hidden: true } },
         { name: "legacyContent", label: "Legacy Content HTML", type: "code", admin: { language: "html", description: "Migrated legacy HTML content.", condition: (_data, _siblingData, { operation }) => operation !== "create" } },
         { name: "rawContent", label: "Raw HTML", type: "textarea", admin: { description: "Optional raw HTML source for new posts." } },
@@ -232,6 +247,14 @@ export default buildConfig({
             { name: "href", type: "text", required: true },
             { name: "legacyUrl", type: "text" },
             { name: "openInNewTab", type: "checkbox", defaultValue: false },
+            {
+              name: "bannerImages",
+              label: "Menu banner images",
+              type: "upload",
+              relationTo: "media",
+              hasMany: true,
+              admin: { description: "Upload one or more banners for this menu. The first image is used by default." },
+            },
           ],
         },
       ],

@@ -12,7 +12,7 @@ export async function GET(request: Request) {
   const payload = await getPayload({ config });
   const result = await payload.find({
     collection: "news-feed",
-    ...(query ? { where: { or: [{ title: { like: query } }, { legacyContent: { like: query } }] } } : archive && categoryArchives[archive] ? { where: { category: { in: [...categoryArchives[archive].categories] } } } : {}),
+    ...(query ? { where: { or: [{ title: { like: query } }, { legacyContent: { like: query } }] } } : archive && categoryArchives[archive] ? { where: categoryArchives[archive].legacyBoardIds?.length ? { and: [{ category: { in: [...categoryArchives[archive].categories] } }, { or: [{ legacyBoardId: { in: categoryArchives[archive].legacyBoardIds.flatMap((id) => [id, id.replace("legacy-board-", "")]) } }, { legacy_category: { in: [...categoryArchives[archive].legacyBoardIds] } }] }] } : { category: { in: [...categoryArchives[archive].categories] } } } : {}),
     depth: 0,
     limit: PAGE_SIZE,
     page,

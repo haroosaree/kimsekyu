@@ -1,6 +1,9 @@
 @import "@kfonts/nanum-square";
 @import "tailwindcss";
 
+.nav-children-indicator { display:inline-block; margin-left:4px; color:var(--muted); font-size:11px; transform:translateY(-1px); }
+.desktop-nav:has(.nav-with-children:hover) .nav-with-children:focus-within:not(:hover) .nav-submenu { display:none; }
+
 :root { --ink:#14263a; --cream:#f6f1e8; --paper:#fffdf9; --gold:#bd8d49; --line:rgba(20,38,58,.16); --muted:#64707b; }
 * { box-sizing:border-box; }
 html { background:var(--paper); }

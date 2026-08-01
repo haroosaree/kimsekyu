@@ -6,8 +6,28 @@ import { useState } from "react";
 
 const navigation = [
   { label: "매물검색", href: "http://austingrace.matrix.abor.com/Matrix/Public/?L=1&ap=SCH", external: true },
-  { label: "부동산 정보", href: "/property-info" },
-  { label: "어스틴 소식", href: "/austin-news" },
+  {
+    label: "부동산 정보", href: "/property-info", children: [
+      { label: "미국 부동산 소식 / 시장 정보", href: "/property-info/market" },
+      { label: "집을 팔때", href: "/property-info/selling" },
+      { label: "집을 살때", href: "/property-info/buying" },
+      { label: "융자 · 모기지 · 크레딧", href: "/property-info/finance" },
+    ],
+  },
+  {
+    label: "어스틴 부동산", href: "/austin-real-estate", children: [
+      { label: "어스틴 부동산 소식", href: "/austin-real-estate/austin-general" },
+      { label: "어스틴 정착", href: "/austin-real-estate/settle" },
+      { label: "어스틴 통계/순위/평가", href: "/austin-real-estate/facts" },
+    ],
+  },
+  {
+    label: "어스틴 경제/뉴스", href: "/austin-economy", children: [
+      { label: "어스틴 지역 · 동네 정보", href: "/austin-economy/local" },
+      { label: "어스틴 경제 · 순위 · 고용", href: "/austin-economy/economy" },
+      { label: "어스틴 경제 · 비즈니스 뉴스", href: "/austin-economy/business" },
+    ],
+  },
   {
     label: "자료실",
     href: "/resources",
@@ -32,7 +52,7 @@ function MenuLinks({ className, onNavigate }: { className: string; onNavigate?: 
   ) : item.children && isMobile ? <div className={`mobile-nav-item ${expandedItem === item.label ? "is-expanded" : ""}`} key={item.label}>
     <div className="mobile-nav-primary">{item.clickable === false ? <button className="mobile-nav-label" type="button" aria-expanded={expandedItem === item.label} onClick={() => setExpandedItem((current) => current === item.label ? null : item.label)}>{item.label}</button> : <Link href={item.href} onClick={onNavigate}>{item.label}</Link>}<button type="button" aria-label={`${item.label} 하위 메뉴 ${expandedItem === item.label ? "닫기" : "열기"}`} aria-expanded={expandedItem === item.label} onClick={() => setExpandedItem((current) => current === item.label ? null : item.label)}>⌄</button></div>
     <div className="mobile-nav-submenu">{item.children.map((child) => <Link href={child.href} key={child.label} onClick={onNavigate}>{child.label}</Link>)}</div>
-  </div> : <div className={item.children ? "nav-with-children" : undefined} key={item.label}>{item.clickable === false ? <span className="nav-parent-label">{item.label}</span> : <Link href={item.href} onClick={onNavigate}>{item.label}</Link>}{item.children && <div className="nav-submenu">{item.children.map((child) => <Link href={child.href} key={child.label} onClick={onNavigate}>{child.label}</Link>)}</div>}</div>)}</nav>;
+  </div> : <div className={item.children ? "nav-with-children" : undefined} key={item.label}>{item.clickable === false ? <span className="nav-parent-label">{item.label}</span> : <Link href={item.href} onClick={onNavigate}>{item.label}</Link>}{item.children && <><span className="nav-children-indicator" aria-hidden="true">⌄</span><div className="nav-submenu">{item.children.map((child) => <Link href={child.href} key={child.label} onClick={onNavigate}>{child.label}</Link>)}</div></>}</div>)}</nav>;
 }
 
 function SiteSearch({ onNavigate }: { onNavigate?: () => void }) {

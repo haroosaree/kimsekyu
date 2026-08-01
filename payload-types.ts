@@ -144,6 +144,9 @@ export interface User {
   name: string;
   updatedAt: string;
   createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -244,7 +247,28 @@ export interface NewsFeed {
     | 'resources/gallery';
   legacy_category?: string | null;
   legacyId?: string | null;
-  legacyBoardId?: string | null;
+  /**
+   * Assign the legacy menu/board for restored navigation and filtering.
+   */
+  legacyBoardId?:
+    | (
+        | 'legacy-board-1'
+        | 'legacy-board-2'
+        | 'legacy-board-3'
+        | 'legacy-board-4'
+        | 'legacy-board-5'
+        | 'legacy-board-6'
+        | 'legacy-board-7'
+        | 'legacy-board-8'
+        | 'legacy-board-9'
+        | 'legacy-board-10'
+        | 'legacy-board-11'
+        | 'legacy-board-12'
+        | 'legacy-board-13'
+        | 'legacy-board-14'
+        | 'legacy-board-15'
+      )
+    | null;
   legacyUrl?: string | null;
   /**
    * Migrated legacy HTML content.
@@ -401,6 +425,9 @@ export interface UsersSelect<T extends boolean = true> {
   name?: T;
   updatedAt?: T;
   createdAt?: T;
+  enableAPIKey?: T;
+  apiKey?: T;
+  apiKeyIndex?: T;
   email?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;
@@ -588,6 +615,10 @@ export interface Navigation {
         href: string;
         legacyUrl?: string | null;
         openInNewTab?: boolean | null;
+        /**
+         * Upload one or more banners for this menu. The first image is used by default.
+         */
+        bannerImages?: (number | Media)[] | null;
         id?: string | null;
       }[]
     | null;
@@ -709,6 +740,7 @@ export interface NavigationSelect<T extends boolean = true> {
         href?: T;
         legacyUrl?: T;
         openInNewTab?: T;
+        bannerImages?: T;
         id?: T;
       };
   updatedAt?: T;

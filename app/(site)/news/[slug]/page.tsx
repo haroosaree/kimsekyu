@@ -14,6 +14,29 @@ import { lexicalToHTML } from "@/lib/lexical-html";
 export const dynamic = "force-dynamic";
 
 const cleanArchiveRoutes: Record<string, string> = { "property-info": "property-info", "austin-news": "austin-news", "austin-real-estate": "austin-news", "austin-economy": "austin-news" };
+const legacyBreadcrumbs: Record<string, { parent: string; parentHref: string; label: string; href: string }> = {
+  "legacy-board-1": { parent: "부동산 정보", parentHref: "/property-info", label: "미국 부동산 소식 / 시장 정보", href: "/property-info/market" },
+  "legacy-board-2": { parent: "부동산 정보", parentHref: "/property-info", label: "집을 팔때", href: "/property-info/selling" },
+  "legacy-board-3": { parent: "부동산 정보", parentHref: "/property-info", label: "집을 살때", href: "/property-info/buying" },
+  "legacy-board-4": { parent: "부동산 정보", parentHref: "/property-info", label: "융자 · 모기지 · 크레딧", href: "/property-info/finance" },
+  "legacy-board-5": { parent: "어스틴 부동산", parentHref: "/austin-real-estate", label: "어스틴 부동산", href: "/austin-real-estate" },
+  "legacy-board-6": { parent: "어스틴 경제/뉴스", parentHref: "/austin-economy", label: "어스틴 지역 · 동네 정보", href: "/austin-economy/local" },
+  "legacy-board-7": { parent: "어스틴 경제/뉴스", parentHref: "/austin-economy", label: "어스틴 경제 · 순위 · 고용", href: "/austin-economy/economy" },
+  "legacy-board-8": { parent: "어스틴 경제/뉴스", parentHref: "/austin-economy", label: "어스틴 경제 · 비즈니스 뉴스", href: "/austin-economy/business" },
+  "legacy-board-9": { parent: "자료실", parentHref: "/resources", label: "어스틴 한인업소록", href: "/resources/koreanbusiness" },
+  "legacy-board-10": { parent: "자료실", parentHref: "/resources", label: "어스틴 관광명소", href: "/resources/tours" },
+  "legacy-board-11": { parent: "자료실", parentHref: "/resources", label: "어스틴 사진/풍경", href: "/resources/gallery" },
+  "legacy-board-14": { parent: "자료실", parentHref: "/resources", label: "어스틴 한인업소록", href: "/resources/koreanbusiness" },
+  "legacy-board-15": { parent: "자료실", parentHref: "/resources", label: "어스틴 관광명소", href: "/resources/tours" },
+};
+
+function firstArticleHTML(article: { richContent?: unknown; rawContent?: unknown; legacyContent?: unknown }) {
+  const rich = lexicalToHTML(article.richContent);
+  if (rich.replace(/<[^>]*>/g, "").trim()) return rich;
+  const raw = typeof article.rawContent === "string" ? article.rawContent : "";
+  if (raw.trim()) return displayLegacyHTML(raw);
+  return displayLegacyHTML(article.legacyContent);
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -46,7 +69,7 @@ export default async function NewsRoute({ params, searchParams }: { params: Prom
       overrideAccess: true,
     });
 
-    return <><MenuHero /><main className="archive-page">
+    return <><MenuHero menuHref={`/${slug}`} /><main className="archive-page">
       <nav className="breadcrumb" aria-label="현재 위치"><Link href="/">홈</Link><span>›</span><span>{archive.title}</span></nav>
       <p className="eyebrow">AUSTIN INTELLIGENCE</p>
       <h1>{archive.title}</h1>
@@ -66,6 +89,7 @@ export default async function NewsRoute({ params, searchParams }: { params: Prom
   const backHref = resourceArchive ? `/resources/${resourceArchive[0]}` : parentArchive ? `/${parentArchive[0]}` : "/austin-news";
   const backLabel = resourceArchive ? `← ${resourceArchive[1].title}` : parentArchive ? `← ${parentArchive[1].title}` : "← 어스틴 소식";
   const articleSchema = { "@context": "https://schema.org", "@type": "Article", headline: article.title, datePublished: article.publishedAt, dateModified: article.updatedAt, author: { "@type": "Person", name: article.legacyAuthor || "김세규 부동산" }, publisher: { "@type": "Organization", name: "김세규 부동산", url: "https://kimsekyu.com" }, mainEntityOfPage: `https://kimsekyu.com/news/${article.slug}` };
-  const articleHTML = lexicalToHTML(article.richContent) || displayLegacyHTML((article.rawContent as string) || (article.legacyContent as string));
-  return <main className="article-page"><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema).replace(/</g, "\\u003c") }} /><Link href={backHref} className="back-link">{backLabel}</Link><p className="eyebrow">{article.category}</p><h1>{article.title as string}</h1><div className="article-details"><time>{formatUSDate(article.publishedAt)}</time><ArticleReadCount id={article.id} initialCount={article.viewCount || article.legacyViewCount || 0} /></div><article className="legacy-content" dangerouslySetInnerHTML={{ __html: articleHTML }} /></main>;
+  const articleHTML = firstArticleHTML(article);
+  const breadcrumb = legacyBreadcrumbs[String(article.legacyBoardId || "")];
+  return <main className="article-page"><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema).replace(/</g, "\\u003c") }} />{breadcrumb ? <nav className="breadcrumb" aria-label="현재 위치"><Link href="/">홈</Link><span>›</span><Link href={breadcrumb.parentHref}>{breadcrumb.parent}</Link><span>›</span><Link href={breadcrumb.href}>{breadcrumb.label}</Link></nav> : <Link href={backHref} className="back-link">{backLabel}</Link>}<p className="eyebrow">{article.category}</p><h1>{article.title as string}</h1><div className="article-details"><time>{formatUSDate(article.publishedAt)}</time><ArticleReadCount id={article.id} initialCount={article.viewCount || article.legacyViewCount || 0} /></div><article className="legacy-content" dangerouslySetInnerHTML={{ __html: articleHTML }} /></main>;
 }

@@ -14,6 +14,7 @@
     "migrate:linebreaks": "node --env-file=.env --import tsx scripts/normalize-content-linebreaks.ts",
     "migrate:kboard-views": "node --env-file=.env --import tsx scripts/backfill-kboard-view-counts.ts",
     "migrate:categories": "node --env-file=.env --import tsx scripts/migrate-news-categories.ts"
+    ,"news:auto": "node --env-file=.env --import tsx scripts/auto-news-post.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1093.0",

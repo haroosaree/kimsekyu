@@ -1,0 +1,4 @@
+interface:
+  display_name: "Auto News Post"
+  short_description: "Create scheduled bilingual Austin and property news posts"
+  default_prompt: "Use $auto-news-post to source, translate, and publish one post for each configured news category."

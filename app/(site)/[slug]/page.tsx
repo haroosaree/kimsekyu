@@ -30,8 +30,10 @@ export default async function Page({ params, searchParams }: { params: Promise<{
 
   const archive = categoryArchives[slug as keyof typeof categoryArchives];
   if (archive) {
-    const news = await payload.find({ collection: "news-feed", where: { category: { in: [...archive.categories] } }, depth: 0, limit: PAGE_SIZE, page: pageNumber, sort: "-publishedAt", overrideAccess: true });
-    return <><MenuHero /><main className="archive-page">
+    const legacyIds = archive.legacyBoardIds?.flatMap((id) => [id, id.replace("legacy-board-", "")]) || [];
+    const where = archive.legacyBoardIds?.length ? { and: [{ category: { in: [...archive.categories] } }, { or: [{ legacyBoardId: { in: legacyIds } }, { legacy_category: { in: [...archive.legacyBoardIds] } }] }] } : { category: { in: [...archive.categories] } };
+    const news = await payload.find({ collection: "news-feed", where: where as never, depth: 0, limit: PAGE_SIZE, page: pageNumber, sort: "-publishedAt", overrideAccess: true });
+    return <><MenuHero menuHref={`/${slug}`} /><main className="archive-page">
       <nav className="breadcrumb" aria-label="현재 위치"><Link href="/">홈</Link><span>›</span><span>{archive.title}</span></nav>
       <p className="eyebrow">AUSTIN INTELLIGENCE</p>
       <h1>{archive.title}</h1>
