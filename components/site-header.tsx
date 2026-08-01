@@ -7,7 +7,9 @@ import { useState } from "react";
 const navigation = [
   { label: "매물검색", href: "http://austingrace.matrix.abor.com/Matrix/Public/?L=1&ap=SCH", external: true },
   {
-    label: "부동산 정보", href: "/property-info", children: [
+    label: "부동산 정보",
+    // href: "/property-info",
+    children: [
       { label: "미국 부동산 소식 / 시장 정보", href: "/property-info/market" },
       { label: "집을 살때", href: "/property-info/buying" },
       { label: "집을 팔때", href: "/property-info/selling" },
@@ -15,23 +17,27 @@ const navigation = [
     ],
   },
   {
-    label: "어스틴 부동산", href: "/austin-real-estate", children: [
+    label: "어스틴 부동산",
+    // href: "/austin-real-estate",
+    children: [
       { label: "어스틴 부동산 소식", href: "/austin-real-estate/austin-general" },
       { label: "어스틴 정착", href: "/austin-real-estate/settle" },
       { label: "어스틴 통계/순위/평가", href: "/austin-real-estate/facts" },
     ],
   },
-  { label: "어스틴 경제/뉴스", href: "/austin-economy" },
   {
-    label: "자료실",
-    href: "/resources",
-    clickable: false,
+    label: "어스틴 경제/뉴스",
+    // href: "/austin-economy",
     children: [
-      { label: "교육/학군", href: "/resources/school" },
+      { label: "어스틴 경제/뉴스", href: "/austin-economy" },
       { label: "어스틴 한인업소록", href: "/resources/koreanbusiness" },
       { label: "어스틴 관광명소", href: "/resources/tours" },
       { label: "어스틴 사진/풍경", href: "/resources/gallery" },
     ],
+  },
+  {
+    label: "교육/학군",
+    href: "/resources/school",
   },
   { label: "문의하기", href: "/contact" },
   { label: "김세규 부동산 소개", href: "/agent" },
@@ -44,9 +50,9 @@ function MenuLinks({ className, onNavigate }: { className: string; onNavigate?: 
   return <nav className={className} aria-label="주요 메뉴">{navigation.map((item) => item.external ? (
     <a key={item.label} href={item.href} target="_blank" rel="noreferrer" onClick={onNavigate}>{item.label}</a>
   ) : item.children && isMobile ? <div className={`mobile-nav-item ${expandedItem === item.label ? "is-expanded" : ""}`} key={item.label}>
-    <div className="mobile-nav-primary">{item.clickable === false ? <button className="mobile-nav-label" type="button" aria-expanded={expandedItem === item.label} onClick={() => setExpandedItem((current) => current === item.label ? null : item.label)}>{item.label}</button> : <Link href={item.href} onClick={onNavigate}>{item.label}</Link>}<button type="button" aria-label={`${item.label} 하위 메뉴 ${expandedItem === item.label ? "닫기" : "열기"}`} aria-expanded={expandedItem === item.label} onClick={() => setExpandedItem((current) => current === item.label ? null : item.label)}>⌄</button></div>
+    <div className="mobile-nav-primary"><button className="mobile-nav-label" type="button" aria-expanded={expandedItem === item.label} onClick={() => setExpandedItem((current) => current === item.label ? null : item.label)}>{item.label}</button><button type="button" aria-label={`${item.label} 하위 메뉴 ${expandedItem === item.label ? "닫기" : "열기"}`} aria-expanded={expandedItem === item.label} onClick={() => setExpandedItem((current) => current === item.label ? null : item.label)}>⌄</button></div>
     <div className="mobile-nav-submenu">{item.children.map((child) => <Link href={child.href} key={child.label} onClick={onNavigate}>{child.label}</Link>)}</div>
-  </div> : <div className={item.children ? "nav-with-children" : undefined} key={item.label}>{item.clickable === false ? <span className="nav-parent-label">{item.label}</span> : <Link href={item.href} onClick={onNavigate}>{item.label}</Link>}{item.children && <><span className="nav-children-indicator" aria-hidden="true">⌄</span><div className="nav-submenu">{item.children.map((child) => <Link href={child.href} key={child.label} onClick={onNavigate}>{child.label}</Link>)}</div></>}</div>)}</nav>;
+  </div> : <div className={item.children ? "nav-with-children" : undefined} key={item.label}>{item.children || (item as { clickable?: boolean }).clickable === false ? <span className="nav-parent-label">{item.label}</span> : <Link href={item.href} onClick={onNavigate}>{item.label}</Link>}{item.children && <><span className="nav-children-indicator" aria-hidden="true">⌄</span><div className="nav-submenu">{item.children.filter((child) => Boolean(child.href)).map((child) => <Link href={child.href} key={child.label} onClick={onNavigate}>{child.label}</Link>)}</div></>}</div>)}</nav>;
 }
 
 function SiteSearch({ onNavigate }: { onNavigate?: () => void }) {
