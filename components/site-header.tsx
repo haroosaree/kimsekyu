@@ -9,8 +9,8 @@ const navigation = [
   {
     label: "부동산 정보", href: "/property-info", children: [
       { label: "미국 부동산 소식 / 시장 정보", href: "/property-info/market" },
-      { label: "집을 팔때", href: "/property-info/selling" },
       { label: "집을 살때", href: "/property-info/buying" },
+      { label: "집을 팔때", href: "/property-info/selling" },
       { label: "융자 · 모기지 · 크레딧", href: "/property-info/finance" },
     ],
   },
@@ -21,13 +21,7 @@ const navigation = [
       { label: "어스틴 통계/순위/평가", href: "/austin-real-estate/facts" },
     ],
   },
-  {
-    label: "어스틴 경제/뉴스", href: "/austin-economy", children: [
-      { label: "어스틴 지역 · 동네 정보", href: "/austin-economy/local" },
-      { label: "어스틴 경제 · 순위 · 고용", href: "/austin-economy/economy" },
-      { label: "어스틴 경제 · 비즈니스 뉴스", href: "/austin-economy/business" },
-    ],
-  },
+  { label: "어스틴 경제/뉴스", href: "/austin-economy" },
   {
     label: "자료실",
     href: "/resources",

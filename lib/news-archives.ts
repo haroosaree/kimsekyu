@@ -33,8 +33,8 @@ export type ArchiveSlug = keyof typeof categoryArchives;
 
 export const austinEconomySubmenus = {
   "austin-general": { title: "어스틴 부동산 소식", categories: ["property-info"], legacyBoardIds: ["legacy-board-5"] },
-  settle: { title: "어스틴 정착", categories: ["property-info"], legacyBoardIds: ["legacy-board-5"] },
-  facts: { title: "어스틴 통계/순위/평가", categories: ["property-info"], legacyBoardIds: ["legacy-board-5"] },
+  settle: { title: "어스틴 정착", categories: ["austin-news"], legacyBoardIds: ["legacy-board-6"] },
+  facts: { title: "어스틴 통계/순위/평가", categories: ["austin-news"], legacyBoardIds: ["legacy-board-7"] },
   market: { title: "미국 부동산 소식 / 시장 정보", categories: ["property-info"], legacyBoardIds: ["legacy-board-1"], legacyLabels: ["미국 부동산 소식 / 시장 정보"] },
   selling: { title: "집을 팔때", categories: ["property-info"], legacyBoardIds: ["legacy-board-2"], legacyLabels: ["주택 매도 가이드"] },
   buying: { title: "집을 살때", categories: ["property-info"], legacyBoardIds: ["legacy-board-3"], legacyLabels: ["주택 구매 / 생활 정보"] },
