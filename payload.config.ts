@@ -27,7 +27,7 @@ const legacyBoardOptions = [
   ["legacy-board-9", "어스틴 한인 비즈니스 · 기관"], ["legacy-board-10", "여행 · 레저"], ["legacy-board-11", "어스틴 사진 · 풍경"],
   ["legacy-board-12", "교육 · 학군 · 대학"], ["legacy-board-13", "부동산 질문 · 답변"],
   ["legacy-board-14", "어스틴 한인 커뮤니티"], ["legacy-board-15", "어스틴 생활 · 명소"],
-].map(([value, label]) => ({ value, label }));
+].flatMap(([value, label]) => [{ value, label }, { value: value.replace("legacy-board-", ""), label }]);
 
 function slugFromTitle(value: unknown) {
   return String(value ?? "")

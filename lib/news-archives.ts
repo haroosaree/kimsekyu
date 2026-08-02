@@ -42,7 +42,8 @@ export const austinEconomySubmenus = {
   local: { title: "어스틴 지역 · 동네 정보", categories: ["austin-news"], legacyBoardIds: ["legacy-board-6"] },
   economy: { title: "어스틴 경제 · 순위 · 고용", categories: ["austin-news"], legacyBoardIds: ["legacy-board-7"] },
   business: { title: "어스틴 경제 · 비즈니스 뉴스", categories: ["austin-news"], legacyBoardIds: ["legacy-board-8"] },
-  koreanbusiness: { title: "어스틴 한인업소록", categories: ["resources/koreanbusiness"], legacyBoardIds: ["legacy-board-9", "legacy-board-14"] },
+  koreanbusiness: { title: "어스틴 한인업소록", categories: ["resources/koreanbusiness"], legacyBoardIds: ["legacy-board-9"] },
+  koreancommunity: { title: "어스틴 한인 커뮤니티", categories: ["resources/koreanbusiness"], legacyBoardIds: ["legacy-board-14"] },
   tours: { title: "어스틴 관광명소", categories: ["resources/tours"], legacyBoardIds: ["legacy-board-10", "legacy-board-15"] },
   gallery: { title: "어스틴 사진/풍경", categories: ["resources/gallery"], legacyBoardIds: ["legacy-board-11"] },
 } as const;

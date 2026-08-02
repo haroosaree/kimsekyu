@@ -16,7 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const nextPage = await payload.find({ collection: "news-feed", limit: 1000, depth: 0, page, overrideAccess: true, select: { slug: true, updatedAt: true, publishedAt: true } });
     news.push(...nextPage.docs);
   }
-  const staticRoutes = ["", "/property-info", "/austin-news", "/resources", "/resources/school", "/resources/koreanbusiness", "/resources/tours", "/resources/gallery", "/contact", "/agent"];
+  const staticRoutes = ["", "/property-info", "/austin-news", "/resources", "/resources/school/map", "/resources/school/schooldistrict", "/resources/koreanbusiness", "/resources/koreancommunity", "/resources/tours", "/resources/gallery", "/contact", "/agent"];
   const archiveRoutes = Object.keys(categoryArchives).filter((slug) => !["questions", "austin-real-estate", "austin-economy"].includes(slug)).map((slug) => `/${slug}`);
   const submenuRoutes = Object.keys(austinEconomySubmenus).filter((slug) => slug !== "business").map((slug) => `/resources/${slug}`);
   return [

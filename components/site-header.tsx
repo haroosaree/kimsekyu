@@ -29,15 +29,19 @@ const navigation = [
     label: "어스틴 경제/뉴스",
     // href: "/austin-economy",
     children: [
-      { label: "어스틴 경제/뉴스", href: "/austin-economy" },
+      { label: "어스틴 경제/비지니스 소식", href: "/austin-economy" },
       { label: "어스틴 한인업소록", href: "/resources/koreanbusiness" },
+      { label: "어스틴 한인 커뮤니티", href: "/resources/koreancommunity" },
       { label: "어스틴 관광명소", href: "/resources/tours" },
       { label: "어스틴 사진/풍경", href: "/resources/gallery" },
     ],
   },
   {
     label: "교육/학군",
-    href: "/resources/school",
+    children: [
+      { label: "어스틴 학군 맵", href: "/resources/school/map" },
+      { label: "교육/학군/대학", href: "/resources/school/schooldistrict" },
+    ],
   },
   { label: "문의하기", href: "/contact" },
   { label: "김세규 부동산 소개", href: "/agent" },

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import NewsArchiveList from "@/components/news-archive-list";
@@ -16,6 +16,10 @@ export default async function ArchiveSubmenu({ params, searchParams }: { params:
   const payload = await getPayload({ config });
 
   if (isResource && submenu === "school") {
+    permanentRedirect("/resources/school/map");
+  }
+
+  if (isResource && submenu === "school-map") {
     const result = await payload.find({ collection: "pages", where: { slug: { equals: "school" } }, depth: 0, limit: 1, overrideAccess: true });
     const school = result.docs[0];
     if (!school) notFound();

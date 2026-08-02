@@ -8,7 +8,7 @@ export function displayLegacyHTML(html: unknown) {
   const displayedImages = new Set<string>();
   const base = process.env.R2_PUBLIC_BASE_URL?.replace(/\/$/, "");
 
-  return html
+  const normalized = html
     .replace(/(<br\s*\/?>(?:\s|&nbsp;)*){2,}/gi, "<br>")
     .replace(/<br\s*\/?>\s*(?=<(?:div|p|h[1-6]|ul|ol|li|table|thead|tbody|tr|blockquote|pre|figure)\b)/gi, "")
     .replace(/(<\/(?:div|p|h[1-6]|ul|ol|li|table|thead|tbody|tr|blockquote|pre|figure)>)\s*<br\s*\/?>/gi, "$1")
@@ -35,6 +35,15 @@ export function displayLegacyHTML(html: unknown) {
       }
       return image;
     });
+  // Linkify plain-text reference URLs without touching existing tags or href/src attributes.
+  return normalized.replace(/([^<]+)|(<[^>]+>)/g, (part, text: string | undefined, tag: string | undefined) => {
+    if (tag) return tag;
+    return String(text || "").replace(/https?:\/\/[^\s<]+/gi, (url) => {
+      const trailing = url.match(/[),.;:!?]+$/)?.[0] || "";
+      const cleanURL = trailing ? url.slice(0, -trailing.length) : url;
+      return `<a href="${cleanURL.replace(/"/g, "&quot;")}" target="_blank" rel="nofollow noopener">${cleanURL}</a>${trailing}`;
+    });
+  });
 }
 
 export function legacyThumbnailURL(html: unknown) {
