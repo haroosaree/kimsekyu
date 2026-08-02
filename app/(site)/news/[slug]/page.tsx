@@ -26,7 +26,8 @@ const legacyBreadcrumbs: Record<string, { parent: string; parentHref: string; la
   "legacy-board-9": { parent: "자료실", parentHref: "/resources", label: "어스틴 한인업소록", href: "/resources/koreanbusiness" },
   "legacy-board-10": { parent: "자료실", parentHref: "/resources", label: "어스틴 관광명소", href: "/resources/tours" },
   "legacy-board-11": { parent: "자료실", parentHref: "/resources", label: "어스틴 사진/풍경", href: "/resources/gallery" },
-  "legacy-board-14": { parent: "자료실", parentHref: "/resources", label: "어스틴 한인업소록", href: "/resources/koreanbusiness" },
+  "legacy-board-12": { parent: "자료실", parentHref: "/resources", label: "교육/학군/대학", href: "/resources/school/schooldistrict" },
+  "legacy-board-14": { parent: "자료실", parentHref: "/resources", label: "어스틴 한인 커뮤니티", href: "/resources/koreancommunity" },
   "legacy-board-15": { parent: "자료실", parentHref: "/resources", label: "어스틴 관광명소", href: "/resources/tours" },
 };
 
@@ -90,6 +91,7 @@ export default async function NewsRoute({ params, searchParams }: { params: Prom
   const backLabel = resourceArchive ? `← ${resourceArchive[1].title}` : parentArchive ? `← ${parentArchive[1].title}` : "← 어스틴 소식";
   const articleSchema = { "@context": "https://schema.org", "@type": "Article", headline: article.title, datePublished: article.publishedAt, dateModified: article.updatedAt, author: { "@type": "Person", name: article.legacyAuthor || "김세규 부동산" }, publisher: { "@type": "Organization", name: "김세규 부동산", url: "https://kimsekyu.com" }, mainEntityOfPage: `https://kimsekyu.com/news/${article.slug}` };
   const articleHTML = firstArticleHTML(article);
-  const breadcrumb = legacyBreadcrumbs[String(article.legacyBoardId || "")];
+  const boardValue = String(article.legacyBoardId || "");
+  const breadcrumb = legacyBreadcrumbs[boardValue] || legacyBreadcrumbs[`legacy-board-${boardValue}`] || legacyBreadcrumbs[String(article.legacy_category || "")];
   return <main className="article-page"><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema).replace(/</g, "\\u003c") }} />{breadcrumb ? <nav className="breadcrumb" aria-label="현재 위치"><Link href="/">홈</Link><span>›</span><Link href={breadcrumb.parentHref}>{breadcrumb.parent}</Link><span>›</span><Link href={breadcrumb.href}>{breadcrumb.label}</Link></nav> : <Link href={backHref} className="back-link">{backLabel}</Link>}<p className="eyebrow">{article.category}</p><h1>{article.title as string}</h1><div className="article-details"><time>{formatUSDate(article.publishedAt)}</time><ArticleReadCount id={article.id} initialCount={article.viewCount || article.legacyViewCount || 0} /></div><article className="legacy-content" dangerouslySetInnerHTML={{ __html: articleHTML }} /></main>;
 }

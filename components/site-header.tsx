@@ -25,17 +25,7 @@ const navigation = [
       { label: "어스틴 통계/순위/평가", href: "/austin-real-estate/facts" },
     ],
   },
-  {
-    label: "어스틴 경제/뉴스",
-    // href: "/austin-economy",
-    children: [
-      { label: "어스틴 경제/비지니스 소식", href: "/austin-economy" },
-      { label: "어스틴 한인업소록", href: "/resources/koreanbusiness" },
-      { label: "어스틴 한인 커뮤니티", href: "/resources/koreancommunity" },
-      { label: "어스틴 관광명소", href: "/resources/tours" },
-      { label: "어스틴 사진/풍경", href: "/resources/gallery" },
-    ],
-  },
+  { label: "어스틴 경제/뉴스", href: "/austin-economy" },
   {
     label: "교육/학군",
     children: [
