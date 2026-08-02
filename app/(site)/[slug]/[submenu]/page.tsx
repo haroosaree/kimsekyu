@@ -32,8 +32,8 @@ export default async function ArchiveSubmenu({ params, searchParams }: { params:
   const legacyIds = archive.legacyBoardIds?.flatMap((id) => [id, id.replace("legacy-board-", "")]) || [];
   const where = archive.legacyBoardIds?.length ? { and: [{ category: { in: [...archive.categories] } }, { or: [{ legacyBoardId: { in: legacyIds } }, { legacy_category: { in: [...legacyLabels, ...archive.legacyBoardIds] } }] }] } : { category: { in: [...archive.categories] } };
   const news = await payload.find({ collection: "news-feed", where: where as never, depth: 0, limit: PAGE_SIZE, page, sort: "-publishedAt", overrideAccess: true });
-  const parentHref = isResource ? "/resources" : slug === "property-info" ? "/property-info" : slug === "austin-real-estate" ? "/austin-real-estate" : "/austin-economy";
-  const parentLabel = isResource ? "자료실" : slug === "property-info" ? "부동산 정보" : slug === "austin-real-estate" ? "어스틴 부동산" : "어스틴 경제/뉴스";
+  const parentHref = isResource ? "/austin-economy" : slug === "property-info" ? "/property-info" : slug === "austin-real-estate" ? "/austin-real-estate" : "/austin-economy";
+  const parentLabel = isResource ? "어스틴 경제/뉴스" : slug === "property-info" ? "부동산 정보" : slug === "austin-real-estate" ? "어스틴 부동산" : "어스틴 경제/뉴스";
 
   return <><MenuHero /><main className="archive-page">
     <nav className="breadcrumb" aria-label="현재 위치"><Link href="/">홈</Link><span>›</span><Link href={parentHref}>{parentLabel}</Link><span>›</span><span>{archive.title}</span></nav>

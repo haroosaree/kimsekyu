@@ -23,12 +23,12 @@ const legacyBreadcrumbs: Record<string, { parent: string; parentHref: string; la
   "legacy-board-6": { parent: "어스틴 경제/뉴스", parentHref: "/austin-economy", label: "어스틴 지역 · 동네 정보", href: "/austin-economy/local" },
   "legacy-board-7": { parent: "어스틴 경제/뉴스", parentHref: "/austin-economy", label: "어스틴 경제 · 순위 · 고용", href: "/austin-economy/economy" },
   "legacy-board-8": { parent: "어스틴 경제/뉴스", parentHref: "/austin-economy", label: "어스틴 경제 · 비즈니스 뉴스", href: "/austin-economy/business" },
-  "legacy-board-9": { parent: "자료실", parentHref: "/resources", label: "어스틴 한인업소록", href: "/resources/koreanbusiness" },
-  "legacy-board-10": { parent: "자료실", parentHref: "/resources", label: "어스틴 관광명소", href: "/resources/tours" },
-  "legacy-board-11": { parent: "자료실", parentHref: "/resources", label: "어스틴 사진/풍경", href: "/resources/gallery" },
-  "legacy-board-12": { parent: "자료실", parentHref: "/resources", label: "교육/학군/대학", href: "/resources/school/schooldistrict" },
-  "legacy-board-14": { parent: "자료실", parentHref: "/resources", label: "어스틴 한인 커뮤니티", href: "/resources/koreancommunity" },
-  "legacy-board-15": { parent: "자료실", parentHref: "/resources", label: "어스틴 관광명소", href: "/resources/tours" },
+  "legacy-board-9": { parent: "어스틴 경제/뉴스", parentHref: "/austin-economy", label: "어스틴 한인업소록", href: "/resources/koreanbusiness" },
+  "legacy-board-10": { parent: "어스틴 경제/뉴스", parentHref: "/austin-economy", label: "어스틴 관광명소", href: "/resources/tours" },
+  "legacy-board-11": { parent: "어스틴 경제/뉴스", parentHref: "/austin-economy", label: "어스틴 사진/풍경", href: "/resources/gallery" },
+  "legacy-board-12": { parent: "교육/학군", parentHref: "/resources/school/map", label: "교육/학군/대학", href: "/resources/school/schooldistrict" },
+  "legacy-board-14": { parent: "어스틴 경제/뉴스", parentHref: "/austin-economy", label: "어스틴 한인 커뮤니티", href: "/resources/koreancommunity" },
+  "legacy-board-15": { parent: "어스틴 경제/뉴스", parentHref: "/austin-economy", label: "어스틴 관광명소", href: "/resources/tours" },
 };
 
 function firstArticleHTML(article: { richContent?: unknown; rawContent?: unknown; legacyContent?: unknown }) {
