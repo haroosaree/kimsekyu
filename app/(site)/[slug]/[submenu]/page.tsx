@@ -39,6 +39,6 @@ export default async function ArchiveSubmenu({ params, searchParams }: { params:
     <nav className="breadcrumb" aria-label="현재 위치"><Link href="/">홈</Link><span>›</span><Link href={parentHref}>{parentLabel}</Link><span>›</span><span>{archive.title}</span></nav>
     <p className="eyebrow">{isResource ? "RESOURCES" : "AUSTIN NEWS"}</p>
     <h1>{archive.title}</h1>
-    <NewsArchiveList initialItems={news.docs.map((item) => ({ id: item.id, title: item.title as string, slug: item.slug, publishedAt: item.publishedAt, viewCount: item.viewCount ?? 0, thumbnailURL: legacyThumbnailURL(item.legacyContent as string) }))} initialPage={page} totalPages={news.totalPages} basePath={`/${slug}/${submenu}`} hideMeta={isResource} />
+    <NewsArchiveList initialItems={news.docs.map((item) => ({ id: item.id, title: item.title as string, slug: item.slug, publishedAt: item.publishedAt, viewCount: item.viewCount ?? 0, thumbnailURL: legacyThumbnailURL(item.legacyContent as string) }))} initialPage={page} totalPages={news.totalPages} basePath={`/${slug}/${submenu}`} archive={submenu} hideMeta={isResource} />
   </main></>;
 }

@@ -46,6 +46,7 @@ export const austinEconomySubmenus = {
   koreancommunity: { title: "어스틴 한인 커뮤니티", categories: ["resources/koreanbusiness"], legacyBoardIds: ["legacy-board-14"] },
   tours: { title: "어스틴 관광명소", categories: ["resources/tours"], legacyBoardIds: ["legacy-board-10", "legacy-board-15"] },
   gallery: { title: "어스틴 사진/풍경", categories: ["resources/gallery"], legacyBoardIds: ["legacy-board-11"] },
+  schooldistrict: { title: "교육/학군/대학", categories: ["resources/school"], legacyBoardIds: ["legacy-board-12"] },
 } as const;
 export type NewsListItem = { id: string | number; title: string; slug: string; publishedAt: string; viewCount: number; thumbnailURL?: string };
 
