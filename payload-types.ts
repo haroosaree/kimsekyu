@@ -608,6 +608,10 @@ export interface SiteSetting {
    */
   heroImage?: (number | null) | Media;
   /**
+   * Upload multiple homepage hero images. One is selected randomly per visit; the gradient overlay remains applied.
+   */
+  heroImages?: (number | Media)[] | null;
+  /**
    * Shared legacy-style banner shown above menu landing pages.
    */
   menuHeroImage?: (number | null) | Media;
@@ -737,6 +741,7 @@ export interface Homepage {
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
   heroImage?: T;
+  heroImages?: T;
   menuHeroImage?: T;
   updatedAt?: T;
   createdAt?: T;

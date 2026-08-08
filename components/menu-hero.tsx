@@ -8,14 +8,22 @@ export default async function MenuHero({ menuHref }: { menuHref?: string }) {
   let imageURL = fallbackImage;
   try {
     const payload = await getPayload({ config });
-    const navigation = await payload.findGlobal({ slug: "navigation", depth: 1, overrideAccess: true });
+    const [navigation, siteSettings] = await Promise.all([
+      payload.findGlobal({ slug: "navigation", depth: 1, overrideAccess: true }),
+      payload.findGlobal({ slug: "site-settings", depth: 1, overrideAccess: true }),
+    ]);
     const item = menuHref && Array.isArray(navigation.items)
       ? navigation.items.find((entry: { href?: string }) => entry.href === menuHref) as { bannerImages?: Array<{ url?: string }> } | undefined
       : undefined;
     const bannerImages = item?.bannerImages?.filter((entry) => entry?.url) || [];
+    const siteHeroImages = Array.isArray((siteSettings as { heroImages?: Array<{ url?: string }> }).heroImages)
+      ? (siteSettings as { heroImages?: Array<{ url?: string }> }).heroImages?.filter((entry) => entry?.url) || []
+      : [];
     const image = bannerImages.length
       ? bannerImages[randomInt(bannerImages.length)]
-      : navigation.bannerImage as { url?: string } | null;
+      : siteHeroImages.length
+        ? siteHeroImages[randomInt(siteHeroImages.length)]
+        : navigation.bannerImage as { url?: string } | null;
     if (image?.url) imageURL = image.url;
   } catch {
     // Retain the migrated legacy banner when the CMS is temporarily unavailable.

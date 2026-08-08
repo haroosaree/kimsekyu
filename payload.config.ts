@@ -218,6 +218,14 @@ export default buildConfig({
           admin: { description: "Homepage hero background. The site gradient overlay remains applied automatically." },
         },
         {
+          name: "heroImages",
+          label: "Homepage hero images",
+          type: "upload",
+          relationTo: "media",
+          hasMany: true,
+          admin: { description: "Upload multiple homepage hero images. One is selected randomly per visit; the gradient overlay remains applied." },
+        },
+        {
           name: "menuHeroImage",
           type: "upload",
           relationTo: "media",
