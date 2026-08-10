@@ -56,7 +56,9 @@ async function getHomepageData() {
     ]);
     const settingsData = settings as unknown as Record<string, unknown>;
     const heroImages = Array.isArray(settingsData.heroImages) ? settingsData.heroImages.filter((image: unknown) => Boolean((image as Media)?.url)) as Media[] : [];
-    const selectedHero = heroImages.length ? heroImages[randomInt(heroImages.length)] : settingsData.heroImage as Media;
+    const configuredHero = settingsData.heroImage as Media;
+    const heroPool = [...heroImages, ...(configuredHero?.url ? [configuredHero] : []), { url: "/og.png" }];
+    const selectedHero = heroPool[randomInt(heroPool.length)];
     return { news: news.docs.map((article) => ({ id: article.id, title: article.title as string, slug: article.slug, category: article.category, publishedAt: article.publishedAt, readCount: article.viewCount ?? 0 })) as Article[], heroImageURL: selectedHero?.url, homepage: homepage as unknown as Record<string, unknown> };
   } catch {
     return { news: [] as Article[], heroImageURL: undefined, homepage: {} as Record<string, unknown> };
