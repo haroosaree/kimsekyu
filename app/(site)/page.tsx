@@ -9,7 +9,8 @@ export const dynamic = "force-dynamic";
 
 type Article = { id: string | number; title: string; slug: string; category: string; publishedAt: string; readCount: number };
 type Item = { value?: string; label?: string; title?: string; description?: string; linkLabel?: string; linkHref?: string };
-type Media = { url?: string } | null | undefined;
+type Media = { url?: string; sizes?: { hero?: { url?: string } } } | null | undefined;
+function mediaURL(media: Media) { return media?.sizes?.hero?.url || media?.url; }
 
 const defaults = {
   hero: {
@@ -55,11 +56,11 @@ async function getHomepageData() {
       payload.findGlobal({ slug: "homepage", depth: 1, overrideAccess: true }),
     ]);
     const settingsData = settings as unknown as Record<string, unknown>;
-    const heroImages = Array.isArray(settingsData.heroImages) ? settingsData.heroImages.filter((image: unknown) => Boolean((image as Media)?.url)) as Media[] : [];
+    const heroImages = Array.isArray(settingsData.heroImages) ? settingsData.heroImages.filter((image: unknown) => Boolean(mediaURL(image as Media))) as Media[] : [];
     const configuredHero = settingsData.heroImage as Media;
-    const heroPool = [...heroImages, ...(configuredHero?.url ? [configuredHero] : []), { url: "/og.png" }];
+    const heroPool = [...heroImages, ...(configuredHero?.url ? [configuredHero] : []), { url: "/og.webp" }];
     const selectedHero = heroPool[randomInt(heroPool.length)];
-    return { news: news.docs.map((article) => ({ id: article.id, title: article.title as string, slug: article.slug, category: article.category, publishedAt: article.publishedAt, readCount: article.viewCount ?? 0 })) as Article[], heroImageURL: selectedHero?.url, homepage: homepage as unknown as Record<string, unknown> };
+    return { news: news.docs.map((article) => ({ id: article.id, title: article.title as string, slug: article.slug, category: article.category, publishedAt: article.publishedAt, readCount: article.viewCount ?? 0 })) as Article[], heroImageURL: mediaURL(selectedHero), homepage: homepage as unknown as Record<string, unknown> };
   } catch {
     return { news: [] as Article[], heroImageURL: undefined, homepage: {} as Record<string, unknown> };
   }

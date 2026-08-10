@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     locale: "ko_KR",
     title: "김세규 부동산 | Austin Real Estate",
     description: "어스틴과 센트럴 텍사스의 주거용·상업용 부동산 파트너.",
-    images: ["/og.png"],
+    images: ["/og.webp"],
   },
   twitter: { card: "summary_large_image", title: "김세규 부동산 | Austin Real Estate", description: "어스틴과 센트럴 텍사스의 주거용·상업용 부동산 파트너." },
 };

@@ -2,6 +2,7 @@ import { postgresAdapter } from "@payloadcms/db-postgres";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig } from "payload";
+import sharp from "sharp";
 
 const mediaCollectionPrefix = "site/general";
 const publicAssetBaseUrl = process.env.R2_PUBLIC_BASE_URL
@@ -11,6 +12,23 @@ const serverURL = process.env.NEXT_PUBLIC_SERVER_URL
   || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined)
   || (process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://kimsekyu.com");
 const isAdmin = ({ req }: { req: { user?: unknown } }) => Boolean(req.user);
+
+// Keep every uploaded image reasonably sized for fast delivery. PDFs and
+// images already within the limit pass through unchanged.
+const resizeUploadedImage = async ({ operation, args }: { operation: string; args?: any }) => {
+  if (operation !== "create" || !args?.file?.data || !args.file.mimetype?.startsWith("image/")) return;
+  try {
+    const metadata = await sharp(args.file.data).metadata();
+    if (!metadata.width || !metadata.height || (metadata.width <= 1920 && metadata.height <= 1920)) return;
+    const data = await sharp(args.file.data)
+      .resize(1920, 1920, { fit: "inside", withoutEnlargement: true })
+      .toBuffer();
+    args.file.data = data;
+    args.file.size = data.length;
+  } catch {
+    // Let Payload handle unsupported/corrupt uploads with its normal error.
+  }
+};
 
 const newsCategoryOptions = [
   "미국 부동산 소식 / 시장 정보", "주택 매도 가이드", "주택 구매 / 생활 정보", "융자 · 모기지 · 크레딧",
@@ -39,6 +57,7 @@ function slugFromTitle(value: unknown) {
 }
 
 export default buildConfig({
+  sharp,
   admin: {
     user: "users",
     theme: "light",
@@ -57,8 +76,12 @@ export default buildConfig({
       slug: "media",
       upload: {
         mimeTypes: ["image/*", "application/pdf"],
+        imageSizes: [
+          { name: "hero", width: 1920, height: 1080, fit: "cover" },
+        ],
       },
       hooks: {
+        beforeOperation: [resizeUploadedImage],
         afterRead: [({ doc }) => {
           if (!publicAssetBaseUrl || !doc.filename) return doc;
           const prefix = doc.prefix

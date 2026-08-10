@@ -3,6 +3,7 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 
 const fallbackImage = "https://pub-8ca6b7121e244bc5a6e95146a35297bf.r2.dev/legacy/wordpress/uploads/2017/02/DSC03599.jpg";
+function mediaURL(media: { url?: string; sizes?: { hero?: { url?: string } } } | null | undefined) { return media?.sizes?.hero?.url || media?.url; }
 
 export default async function MenuHero({ menuHref }: { menuHref?: string }) {
   let imageURL = fallbackImage;
@@ -15,7 +16,7 @@ export default async function MenuHero({ menuHref }: { menuHref?: string }) {
     const item = menuHref && Array.isArray(navigation.items)
       ? navigation.items.find((entry: { href?: string }) => entry.href === menuHref) as { bannerImages?: Array<{ url?: string }> } | undefined
       : undefined;
-    const bannerImages = item?.bannerImages?.filter((entry) => entry?.url) || [];
+    const bannerImages = item?.bannerImages?.filter((entry) => mediaURL(entry)) || [];
     const siteHeroImages = Array.isArray((siteSettings as { heroImages?: Array<{ url?: string }> }).heroImages)
       ? (siteSettings as { heroImages?: Array<{ url?: string }> }).heroImages?.filter((entry) => entry?.url) || []
       : [];
@@ -24,7 +25,8 @@ export default async function MenuHero({ menuHref }: { menuHref?: string }) {
       : siteHeroImages.length
         ? siteHeroImages[randomInt(siteHeroImages.length)]
         : navigation.bannerImage as { url?: string } | null;
-    if (image?.url) imageURL = image.url;
+    const selectedURL = mediaURL(image);
+    if (selectedURL) imageURL = selectedURL;
   } catch {
     // Retain the migrated legacy banner when the CMS is temporarily unavailable.
   }
