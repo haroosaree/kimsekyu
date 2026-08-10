@@ -13,8 +13,8 @@
     "migrate:finalize": "node --env-file=.env --import tsx scripts/finalize-legacy-taxonomy.ts",
     "migrate:linebreaks": "node --env-file=.env --import tsx scripts/normalize-content-linebreaks.ts",
     "migrate:kboard-views": "node --env-file=.env --import tsx scripts/backfill-kboard-view-counts.ts",
-    "migrate:categories": "node --env-file=.env --import tsx scripts/migrate-news-categories.ts"
-    ,"news:auto": "node --env-file=.env --import tsx scripts/auto-news-post.ts"
+    "migrate:categories": "node --env-file=.env --import tsx scripts/migrate-news-categories.ts",
+    "news:auto": "node --env-file=.env --import tsx scripts/auto-news-post.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1093.0",
@@ -34,6 +34,8 @@
     "sharp": "^0.35.3"
   },
   "devDependencies": {
+    "@img/sharp-libvips-linux-x64": "1.3.2",
+    "@img/sharp-linux-x64": "0.35.3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/nodemailer": "^8.0.1",
