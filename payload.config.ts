@@ -13,18 +13,18 @@ const serverURL = process.env.NEXT_PUBLIC_SERVER_URL
   || (process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://kimsekyu.com");
 const isAdmin = ({ req }: { req: { user?: unknown } }) => Boolean(req.user);
 
-// Keep every uploaded image reasonably sized for fast delivery. PDFs and
-// images already within the limit pass through unchanged.
+// Normalize every uploaded image for fast delivery. PDFs pass through unchanged.
 const resizeUploadedImage = async ({ operation, args }: { operation: string; args?: any }) => {
   if (operation !== "create" || !args?.file?.data || !args.file.mimetype?.startsWith("image/")) return;
   try {
-    const metadata = await sharp(args.file.data).metadata();
-    if (!metadata.width || !metadata.height || (metadata.width <= 1920 && metadata.height <= 1920)) return;
     const data = await sharp(args.file.data)
-      .resize(1920, 1920, { fit: "inside", withoutEnlargement: true })
+      .resize(1200, 1200, { fit: "inside", withoutEnlargement: true })
+      .webp({ quality: 82 })
       .toBuffer();
     args.file.data = data;
     args.file.size = data.length;
+    args.file.mimetype = "image/webp";
+    args.file.name = `${String(args.file.name || "image").replace(/\.[^.]+$/, "")}.webp`;
   } catch {
     // Let Payload handle unsupported/corrupt uploads with its normal error.
   }
