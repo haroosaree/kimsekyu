@@ -14,17 +14,18 @@ const serverURL = process.env.NEXT_PUBLIC_SERVER_URL
 const isAdmin = ({ req }: { req: { user?: unknown } }) => Boolean(req.user);
 
 // Normalize every uploaded image for fast delivery. PDFs pass through unchanged.
-const resizeUploadedImage = async ({ operation, args }: { operation: string; args?: any }) => {
-  if (operation !== "create" || !args?.file?.data || !args.file.mimetype?.startsWith("image/")) return;
+const resizeUploadedImage = async ({ operation, req }: { operation: string; req: any }) => {
+  const file = req?.file;
+  if (operation !== "create" || !file?.data || !file.mimetype?.startsWith("image/")) return;
   try {
-    const data = await sharp(args.file.data)
+    const data = await sharp(file.data)
       .resize(1200, 1200, { fit: "inside", withoutEnlargement: true })
       .webp({ quality: 82 })
       .toBuffer();
-    args.file.data = data;
-    args.file.size = data.length;
-    args.file.mimetype = "image/webp";
-    args.file.name = `${String(args.file.name || "image").replace(/\.[^.]+$/, "")}.webp`;
+    file.data = data;
+    file.size = data.length;
+    file.mimetype = "image/webp";
+    file.name = `${String(file.name || "image").replace(/\.[^.]+$/, "")}.webp`;
   } catch {
     // Let Payload handle unsupported/corrupt uploads with its normal error.
   }
